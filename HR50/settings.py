@@ -25,7 +25,7 @@ SECRET_KEY = 'srimzux_1l*28&e1$*1&a(8gy7s_@%9p4y^365h1z#a)tw^=y!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hr50.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -74,13 +74,23 @@ WSGI_APPLICATION = 'HR50.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
+DATABASES = {  
+   'default': {  
+        'ENGINE': 'django.db.backends.postgresql',  
+        'NAME': 'users',  
+        'USER': 'postgres',  
+        'PASSWORD': '777',  # пароль
+        'HOST': '127.0.0.1',
+        'PORT': '5432',		
+    }  
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
