@@ -1,0 +1,29 @@
+<!-- templates/signup.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+<h4>Личный кабинет</h4>
+
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-2 text-muted">Личный кабинет пользователя</h5>
+
+
+      <form method="post">
+      {% csrf_token %}
+  
+      <input type="hidden" name="next" value="{{ next }}">
+
+      {{ form|crispy }}
+
+      <button type="submit" class="btn btn-light">Не нажимать!</button>
+ 
+      </form>
+	</div>
+    </div>	  
+  </div>
+</div>	  
+{% endblock content %}

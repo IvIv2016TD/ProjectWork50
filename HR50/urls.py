@@ -22,5 +22,7 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path( '' , RedirectView . as_view ( url = 'apphr50/' )),
 	path('apphr50/', include('apphr50.urls')),
+    path('accounts/', include('django.contrib.auth.urls')), # Авторизация
+    path('accounts/', include('accounts.urls')), # Маршрут регистрации
     path('admin/', admin.site.urls),
 ]
