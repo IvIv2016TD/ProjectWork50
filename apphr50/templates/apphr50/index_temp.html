@@ -9,5 +9,6 @@
       <div class="col-4">
         <a class="btn btn-light" href="{% url 'signup' %}" role="button">Зарегистрироваться</a>
       </div>
+	  <p>Вы были на этой странице {{ num_visits }}{% if num_visits == 1 %} раз{% else %} раз{% endif %}.</p>
     </div>
 {% endblock %}
