@@ -20,6 +20,14 @@ from django.utils.http import urlsafe_base64_encode
 from .tokens import account_activation_token
 from django.template.loader import render_to_string
 
+from django.conf import settings
+from django.core.mail import BadHeaderError, send_mail
+
+from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
+
+import smtplib
+
 from .forms import SignUpForm
 from .tokens import account_activation_token
 
@@ -86,7 +94,7 @@ def signup_view(request):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            subject = 'Please Activate Your Account'
+            subject = 'Пожалуйста, активируйте свой аккаунт'
             # load a template like get_template() 
             # and calls its render() method immediately.
             message = render_to_string('activation_request.html', {
@@ -96,7 +104,30 @@ def signup_view(request):
                 # method will generate a hash value with user related data
                 'token': account_activation_token.make_token(user),
             })
-            user.email_user(subject, message)
+#            user.email_user(subject, message, html_message=message)
+#            send_mail(subject, message, 'from@example.com', ['testhr50@mail.ru'],)
+#            msg = EmailMessage(
+#              subject=u'Пожалуйста, активируйте свой аккаунт',
+#              body=message,
+#              from_email='confirmreghr@mail.ru',
+#              to=('testhr50@mail.ru',),
+#              headers={'From': 'confirmreghr@mail.ru'}
+#            )
+#            msg.content_subtype = 'html'
+#            msg.send()
+
+            from_email, to = 'confirmreghr@mail.ru', 'testhr50@mail.ru'
+            text_content = "http://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
+            #text_content = "http://" + current_site.domain + "/accounts/activate/" + urlsafe_base64_encode(force_bytes(user.pk)) + "/" + account_activation_token.make_token(user)
+            #link='https://google.ru'
+            #{% url 'activate' uidb64=uid token=token as the_url %}
+            html_content = message
+#            msg = EmailMultiAlternatives(subject, html_content, 'confirmreghr@mail.ru', ['testhr50@mail.ru'])
+            msg = EmailMultiAlternatives(subject, html_content, 'confirmreghr@mail.ru', ['testhr50@mail.ru'])           
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+#            send_mail('Test', 'Test messsage', settings.EMAIL_HOST_USER, ['testhr50@mail.ru'])
             return redirect('activation_sent')
     else:
         form = SignUpForm()

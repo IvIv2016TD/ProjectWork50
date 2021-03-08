@@ -1,1 +1,30 @@
-<h3>Activation link sent! Please check your console or mail.</h3>
+<!--
+<h3>На электронную почту выслана ссылка активации. Проверьте свой e-mail.</h3>
+-->
+
+<!-- templates/activation_sent.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="single-post">
+				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
+				<p>Ссылка активации</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-2 text-muted">На электронную почту выслана ссылка активации. Проверьте свой e-mail. Для активации аккаунта перейдите по ссылке в Вашей электронной почте</h5>
+	</div>
+    </div>	  
+  </div>
+</div>	  
+{% endblock content %}

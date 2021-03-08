@@ -1,7 +1,9 @@
 {% autoescape off %}
-Hi {{ user.username }},
-
-Please click the following link to confirm your registration:
-
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+Здравствуйте {{user}}.  Для активации своего аккаунта пройдите по этой ссылке:
+<p><a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}">Ссылка активации</a></p>
 {% endautoescape %}
+
+
+
+
+
