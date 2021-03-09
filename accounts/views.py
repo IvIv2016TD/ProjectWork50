@@ -69,11 +69,11 @@ def activate(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    # checking if the user exists, if the token is valid.
+    # проверка того, что пользователь существует и токен его валиден
     if user is not None and account_activation_token.check_token(user, token):
-        # if valid set active true 
+        # если да - активируем аккаунт 
         user.is_active = True
-        # set signup_confirmation true
+        # установка флага подтверждения регистрации
         user.profile.signup_confirmation = True
         user.save()
         login(request, user)
@@ -90,44 +90,22 @@ def signup_view(request):
             user.profile.first_name = form.cleaned_data.get('first_name')
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
-            # user can't login until link confirmed
+            # пользователь не сможет залогинится пока регистрация не будет подтверждена
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
             subject = 'Пожалуйста, активируйте свой аккаунт'
-            # load a template like get_template() 
-            # and calls its render() method immediately.
+            # загружаем и заполняем шаблон 
             message = render_to_string('activation_request.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                # method will generate a hash value with user related data
+                # метод вычисляет хэш по данным нового пользователя
                 'token': account_activation_token.make_token(user),
             })
-#            user.email_user(subject, message, html_message=message)
-#            send_mail(subject, message, 'from@example.com', ['testhr50@mail.ru'],)
-#            msg = EmailMessage(
-#              subject=u'Пожалуйста, активируйте свой аккаунт',
-#              body=message,
-#              from_email='confirmreghr@mail.ru',
-#              to=('testhr50@mail.ru',),
-#              headers={'From': 'confirmreghr@mail.ru'}
-#            )
-#            msg.content_subtype = 'html'
-#            msg.send()
-
-            from_email, to = 'confirmreghr@mail.ru', 'testhr50@mail.ru'
-            text_content = "http://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
-            #text_content = "http://" + current_site.domain + "/accounts/activate/" + urlsafe_base64_encode(force_bytes(user.pk)) + "/" + account_activation_token.make_token(user)
-            #link='https://google.ru'
-            #{% url 'activate' uidb64=uid token=token as the_url %}
-            html_content = message
-#            msg = EmailMultiAlternatives(subject, html_content, 'confirmreghr@mail.ru', ['testhr50@mail.ru'])
-            msg = EmailMultiAlternatives(subject, html_content, 'confirmreghr@mail.ru', ['testhr50@mail.ru'])           
-            msg.attach_alternative(html_content, "text/html")
+            msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
+            msg.attach_alternative(message, "text/html")
             msg.send()
-
-#            send_mail('Test', 'Test messsage', settings.EMAIL_HOST_USER, ['testhr50@mail.ru'])
             return redirect('activation_sent')
     else:
         form = SignUpForm()
