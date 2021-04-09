@@ -28,11 +28,96 @@ from django.core.mail import EmailMultiAlternatives
 
 import smtplib
 
-from .forms import SignUpForm
+from .forms import SignUpForm, NumberOfPoints
 from .tokens import account_activation_token
 
 def home(request):
     return render(request, 'accounts/home.html', {})
+	
+def test_IDB(request):
+    if request.method == "POST":
+        form = NumberOfPoints(request.POST)
+        if form.is_valid():
+            number_of_points = form.cleaned_data.get('number_of_points')
+            write_influxDB(number_of_points)
+#            data_InfluxDB = 'Точки тестовой последовательности InfluxDB'
+#            results = []
+#            results = read_influxDB()
+#            one = open("One.txt", 'a')
+#            index = 0
+#            for item in results:
+#              one.write(str(index)+ "   " + str((results[index])) + "\n")
+#              index = index + 1
+#            one.write(str(1000) + "\n")
+#            one.flush()
+#            one.close()
+    else:
+            #return redirect('home')
+            #return HttpResponse(u'Куда прёшь?')
+            form = NumberOfPoints()
+    #return redirect('home')
+    #return HttpResponse(u'Не туда прёшь!')	
+    return render(request, 'accounts/test_IDB.html', {'form':form})
+
+def write_influxDB(npoints):
+    import influxdb_client
+    from influxdb_client.client.write_api import SYNCHRONOUS
+
+    import random
+
+    bucket = "HRWEB"
+    org = "PM72"
+    token = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
+# Store the URL of your InfluxDB instance
+#url="http://localhost:8086"
+    url="https://eu-central-1-1.aws.cloud2.influxdata.com/"
+
+    client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+
+    #npoints = 1000
+    min = -5
+    max = 15
+    for item in range(npoints):
+        hr = 70 + random.randint(min, max)
+        p = influxdb_client.Point("my_measurement_1").tag("location", "Novosibirsk").field("hr_per_minute", hr)
+        write_api.write(bucket=bucket, org=org, record=p)	
+
+def read_influxDB():
+    import influxdb_client
+    from influxdb_client.client.write_api import SYNCHRONOUS
+
+    bucket = "HRWEB"
+    org = "PM72"
+    token = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
+# Store the URL of your InfluxDB instance
+#url="http://localhost:8086"
+    url="https://eu-central-1-1.aws.cloud2.influxdata.com/"
+
+    client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+    query_api = client.query_api()
+    query = 'from(bucket:"HRWEB")\
+    |> range(start: -10m)\
+    |> filter(fn:(r) => r._measurement == "my_measurement_1")\
+    |> filter(fn: (r) => r.location == "Novosibirsk")\
+    |> filter(fn:(r) => r._field == "hr_per_minute" )'
+    result = client.query_api().query(org=org, query=query)
+
+    results = []
+    for table in result:
+        for record in table.records:
+            results.append((record.get_field(), record.get_value()))
+#    one = open("One.txt", 'a')
+#    index = 0
+#    for item in results:
+#        one.write(str(index)+ "   " + str((results[index])) + "\n")
+#        index = index + 1
+#    one.write(str(1000) + "\n")
+#    one.flush()
+#    one.close()
+    return results
+	
 	
 def about_test(request):
     test_IDB_1(3)
@@ -76,6 +161,7 @@ def activate(request, uidb64, token):
         # установка флага подтверждения регистрации
         user.profile.signup_confirmation = True
         user.save()
+		# присоединение пользователя к текущему сеансу
         login(request, user)
         return redirect('home')
     else:

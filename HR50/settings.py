@@ -163,3 +163,4 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  #. os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'home'
+#LOGIN_REDIRECT_URL = 'test_IDB'
