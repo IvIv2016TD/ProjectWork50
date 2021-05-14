@@ -47,8 +47,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = "confirmreghr@inbox.ru"
-EMAIL_HOST_PASSWORD = "pyuP*PgEkI21"
+EMAIL_HOST_USER = "confirmreghr@mail.ru"
+EMAIL_HOST_PASSWORD = "IIr*pciRyR33"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

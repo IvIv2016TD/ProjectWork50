@@ -176,6 +176,7 @@ def signup_view(request):
             user.profile.first_name = form.cleaned_data.get('first_name')
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
+            user.profile.status_of_user = form.cleaned_data.get('status_of_user')
             # пользователь не сможет залогинится пока регистрация не будет подтверждена
             user.is_active = False
             user.save()
