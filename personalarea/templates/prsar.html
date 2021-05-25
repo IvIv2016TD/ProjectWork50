@@ -1,0 +1,70 @@
+<!-- templates/about_test.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="single-post">
+				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
+				<p>Личный кабинет пользователя {{prsar}} ({{user.profile.first_name}} {{user.profile.last_name}})</p>
+				
+				<p>
+					<a class="btn btn-light" href="{% url 'login' %}" role="button">Выйти из личного кабинета</a>
+				</p>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
+	  
+      <form method="post">
+      {% csrf_token %}
+
+<!--  
+      <input type="hidden" name="next" value="{{ next }}">
+	  
+      <label for="number-of-points">Количество точек тестовой последовательности: </label>
+      <input id="number-of-points" type="number" name="number-of-points" value="{{ 1000 }}">	  
+-->
+	  {{NumberOfPoints}}
+      {{ form|crispy }}
+
+      <p>
+	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB</button>
+      </p>
+<!--
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+      </div>	  
+-->
+      </form>
+	  
+	</div>
+    </div>	  
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-2 text-muted">Считанная из InfluxDB тестовая последовательность</h5>
+	  
+      <p>
+	    Точки тестовой последовательности InfluxDB. {{user}} {{ current_site }}
+	  </p>
+	  
+	</div>
+    </div>	  
+  </div>
+</div>
+	  
+{% endblock content %}

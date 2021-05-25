@@ -2,13 +2,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from . forms import SignUpForm
+from . forms import SignUpForm, NumberOfPoints
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http  import  HttpResponse
 import datetime
 
-from django.contrib.auth import login, authenticate
+#from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_text
@@ -28,11 +28,13 @@ from django.core.mail import EmailMultiAlternatives
 
 import smtplib
 
-from .forms import SignUpForm, NumberOfPoints
-from .tokens import account_activation_token
+#from .forms import SignUpForm, NumberOfPoints
+#from .tokens import account_activation_token
+from .models import Profile
 
 def home(request):
-    return render(request, 'accounts/home.html', {})
+    tdic = {'thome':'Test home'}
+    return render(request, 'accounts/home.html', {'thome':'Test home'})
 	
 def test_IDB(request):
     if request.method == "POST":
@@ -140,11 +142,29 @@ class SignUpView(generic.CreateView):
     template_name = 'signup.html'
 
 def home_view(request):
-    return render(request, 'home.html')
+    tdichome = {'home':'Test home'}
+    return render(request, 'home.html', context=tdichome)
 
 def activation_sent_view(request):
-    return render(request, 'activation_sent.html')
-	
+    tdicact = {'activation_sent_view':'Test activation_sent_view'}
+    #users = User.objects.all()
+    ##для одиночного пользователя
+    #if users.profile.status_of_user == 'SU':		
+    #    #login(request, user)
+    #    return render(request, 'activation_sent.html', context=num_profiles)
+    ##для члена группы
+    #elif users.profile.status_of_user == 'GM':
+    #    #login(request, user)
+    #    return redirect('home')
+    ##для руководителя группы
+    #elif users.profile.status_of_user == 'TL':
+    #    #login(request, user)
+    #    return redirect('home')		
+    return render(request, 'activation_sent.html', context=num_profiles)
+
+def activation_sent_tl_view(request):
+    return render(request, 'activation_sent_tl.html', context=num_profiles)
+
 def activation_invalid_view(request):
     return render(request, 'activation_invalid.html')
 
@@ -162,12 +182,38 @@ def activate(request, uidb64, token):
         user.profile.signup_confirmation = True
         user.save()
 		# присоединение пользователя к текущему сеансу
-        login(request, user)
-        return redirect('home')
+        #для одиночного пользователя
+        if user.profile.status_of_user == 'SU':		
+            login(request, user)
+            return redirect('home')
+        #для члена группы
+        elif user.profile.status_of_user == 'GM':
+            login(request, user)
+            return redirect('home')
+        #для руководителя группы
+        elif user.profile.status_of_user == 'TL':
+            current_site = get_current_site(request)
+            subject = 'Ваш аккаунт активирован.' 
+            # загружаем и заполняем шаблон 
+            message = render_to_string('activation_request_tl.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                # метод вычисляет хэш по данным нового пользователя
+                'token': account_activation_token.make_token(user),
+            })
+			#отправляем письмо
+            msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
+            msg.attach_alternative(message, "text/html")
+            msg.send()            
+            login(request, user)
+            return redirect('home')
     else:
+        #return redirect('activation_invalid.html')
         return render(request, 'activation_invalid.html')
 
 def signup_view(request):
+    global num_profiles
     if request.method  == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -190,10 +236,35 @@ def signup_view(request):
                 # метод вычисляет хэш по данным нового пользователя
                 'token': account_activation_token.make_token(user),
             })
-            msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
-            msg.attach_alternative(message, "text/html")
-            msg.send()
-            return redirect('activation_sent')
+			#для одиночного пользователя
+            if user.profile.status_of_user == 'SU':
+                msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
+                msg.attach_alternative(message, "text/html")
+                msg.send()
+                num_profiles = {'upe':user.profile.email}
+                return redirect('activation_sent')
+            #для члена группы
+            elif user.profile.status_of_user == 'GM':
+                msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
+                msg.attach_alternative(message, "text/html")
+                msg.send()
+                num_profiles = {'upe':user.profile.email}
+                return redirect('activation_sent')
+            #для руководителя группы				
+            elif user.profile.status_of_user == 'TL':
+                msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, 
+                    [User.objects.all().get(username='admin').email]) # почта администратора         
+                msg.attach_alternative(message, "text/html")
+                msg.send()
+                num_profiles = {'upe':user.profile.email}
+                #num_profiles = {'upe':User.objects.all().get(username='admin').email}
+                return redirect('activation_sent_tl')
+            #all_profiles = User.objects.all()
+            #num_profiles = {'np':all_profiles.get(first_name='Сидор'), 'upe':user.profile.email}
+            #num_profiles = {'upe':User.objects.all().get(username='admin').email}
+            #render(request, 'activation_sent.html', context=num_profiles)			
+            #return redirect('activation_sent')
+            #return HttpResponseRedirect(reverse('activation_sent', kwargs={'num_profiles': num_profiles}))
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})	

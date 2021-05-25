@@ -8,7 +8,7 @@
 		<div class="col">
 			<div class="single-post">
 				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
-				<p>Личный кабинет</p>
+				<p>Вход в личный кабинет</p>
 			</div>
 		</div>
 	</div>
@@ -23,10 +23,18 @@
       <form method="post">
       
 	  {% csrf_token %}
+      <!--
       <input type="hidden" name="next" value="{{ "test_IDB" }}">
+      -->
       {{ form|crispy }}
-      <button type="submit" class="btn btn-light">Войти</button>
- 
+	  
+      <input type="hidden" name="next" value="{{ "prsar" }}">
+	  
+	  <button type="submit" class="btn btn-light">Войти</button>
+      
+	  <!--
+	  <a class="btn btn-light" href="{% url 'prsar' %}" role="button">Войти</a>
+	  -->
       </form>
 	</div>
     </div>	  

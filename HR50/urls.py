@@ -24,5 +24,6 @@ urlpatterns = [
 	path('apphr50/', include('apphr50.urls')),
     path('accounts/', include('django.contrib.auth.urls')), # Авторизация
     path('accounts/', include('accounts.urls')), # Маршрут регистрации
-    path('admin/', admin.site.urls),
+    path('personalarea/', include('personalarea.urls')), # Маршрут регистрации 
+	path('admin/', admin.site.urls),
 ]
