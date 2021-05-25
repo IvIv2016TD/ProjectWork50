@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 # Create your models here.
 
@@ -22,7 +23,8 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=150)
     status_of_user = models.CharField(max_length=50, choices=STATUS_OF_USER_CHOICES, default=SINGLE_USER, blank=True)
-    bio = models.TextField()
+    data_of_registration = models.DateField(default=datetime.date.today())
+    time_of_last_visit = models.DateTimeField(auto_now=True)
     signup_confirmation = models.BooleanField(default=False)
 
     def __str__(self):

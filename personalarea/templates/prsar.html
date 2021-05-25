@@ -8,8 +8,17 @@
 		<div class="col">
 			<div class="single-post">
 				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
-				<p>Личный кабинет пользователя {{prsar}} ({{user.profile.first_name}} {{user.profile.last_name}})</p>
-				
+				<p>
+				   Личный кабинет пользователя {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) 
+				   Дата регистрации: {{user.profile.data_of_registration}} Время последнего визита: {{user.profile.time_of_last_visit}}
+				</p>
+				<p>
+				   Cтатус пользователя: 
+				   {% if user.profile.status_of_user == 'SU' %} одиночный пользователь 
+				   {% elif user.profile.status_of_user == 'GM' %} член группы 
+				   {% elif user.profile.status_of_user == 'TL' %} руководитель группы 
+				   {% endif %}
+				</p>
 				<p>
 					<a class="btn btn-light" href="{% url 'login' %}" role="button">Выйти из личного кабинета</a>
 				</p>

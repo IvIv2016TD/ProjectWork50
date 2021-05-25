@@ -5,6 +5,6 @@ from django.contrib import admin
 from .models import Profile
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'first_name', 'last_name', 'email', 'bio', 'signup_confirmation', 'status_of_user']
+    list_display = ['user', 'first_name', 'last_name', 'email', 'signup_confirmation', 'status_of_user', 'data_of_registration', 'time_of_last_visit']
 
 admin.site.register(Profile, ProfileAdmin)
