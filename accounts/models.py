@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from django.utils import timezone
 
 # Create your models here.
 
@@ -32,6 +33,25 @@ class Profile(models.Model):
 		
     def is_upperclass(self):
         return self.status_of_user in {self.GROUP_MEMBER, self.TEAM_LEADER}
+
+class Seanses(models.Model):
+
+    #user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.CharField(max_length=100, blank=True)
+    time_of_begin = models.DateTimeField(default=timezone.now())
+    time_of_end = models.DateTimeField(auto_now=True)
+    number_of_points_write = models.IntegerField(default=0)
+    number_of_points_read = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "Seanses of Users"
+    
+    @classmethod
+    def create_seanse(cls, name_user, output_time_of_begin, number_of_points_write, number_of_points_read):
+        seanse = cls(user = name_user, time_of_begin = output_time_of_begin, 
+                    number_of_points_write = number_of_points_write, 
+                    number_of_points_read = number_of_points_read)
+        return seanse
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):

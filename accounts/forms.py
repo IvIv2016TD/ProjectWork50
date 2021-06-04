@@ -29,4 +29,4 @@ class SignUpForm(UserCreationForm):
 
 class NumberOfPoints(forms.Form):
     #number_of_points = 1000
-    number_of_points = forms.IntegerField(label = 'Количество точек тестовой последовательности:', min_value =1, max_value = 1000) 
+    number_of_points = forms.IntegerField(label = 'Количество точек тестовой последовательности:', min_value =1, max_value = 100) 

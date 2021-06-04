@@ -1,5 +1,5 @@
 <!-- templates/about_test.html -->
-{% extends 'base.html' %}
+{% extends 'base_prsar.html' %}
 {% load crispy_forms_tags %}
  
 {% block content %}
@@ -10,18 +10,41 @@
 				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
 				<p>
 				   Личный кабинет пользователя {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) 
-				   Дата регистрации: {{user.profile.data_of_registration}} Время последнего визита: {{user.profile.time_of_last_visit}}
-				</p>
-				<p>
-				   Cтатус пользователя: 
+				   Дата регистрации: {{user.profile.data_of_registration}} Cтатус пользователя: 
 				   {% if user.profile.status_of_user == 'SU' %} одиночный пользователь 
 				   {% elif user.profile.status_of_user == 'GM' %} член группы 
 				   {% elif user.profile.status_of_user == 'TL' %} руководитель группы 
-				   {% endif %}
+				   {% endif %} 
 				</p>
 				<p>
-					<a class="btn btn-light" href="{% url 'login' %}" role="button">Выйти из личного кабинета</a>
+				   Вы посещали свой личный кабинет {{ num_seanses }}{% if num_seanses == 1 %} раз{% else %} раз{% endif %}. Время последнего визита: {{time_of_last_visit}}
+				   <!--
+				   Время входа: {{time_of_begin}}
+				   -->
 				</p>
+				<p>
+				   
+				</p>
+				<p>
+					<a class="btn btn-light" href="{% url 'logged_out' %}" role="button">Выйти из личного кабинета</a>
+				</p>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Первая вкладка</div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+</div>
 
 			</div>
 		</div>
@@ -55,6 +78,10 @@
       </div>	  
 -->
       </form>
+	  
+	  <p>
+		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
+	  </p>	  
 	  
 	</div>
     </div>	  
