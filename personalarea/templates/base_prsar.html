@@ -26,35 +26,51 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 
-				<!--
+
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav ml-auto">
-						<li class="nav-item"><a class="nav-link" href="{% url 'index' %}">На главную</a></li>
-						<li class="nav-item"><a class="nav-link" href="{% url 'about' %}">О чём сайт</a></li>
-						<li class="nav-item"><a class="nav-link" href="{% url 'whatfor' %}">Зачем нужен</a></li>
-						<li class="nav-item"><a class="nav-link" href="{% url 'howtouse' %}">Как пользоваться</a></li>
+						<li class="nav-item"><a class="nav-link" href="{% url 'work_with_seanses' %}">Работа с сеансами</a></li>
+						<li class="nav-item"><a class="nav-link" href="{% url 'work_with_series' %}">Работа с сериями ЧСС</a></li>
+						<li class="nav-item"><a class="nav-link" href="{% url 'work_with_points' %}">Работа с точками ЧСС</a></li>
+						<li class="nav-item"><a class="nav-link" href="{% url 'testing' %}">Тестирование</a></li>
 					</ul>
 				</div>
-				-->
+
 			</nav>
 		</div>
 	</header>
-<!--
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				<div class="single-post">
-				<!--
-					<h3 class="post-category">Главная новость</h3>
-				-->
-<!--
-					<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
-					<p>Личный кабинет</p>
-				</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="single-post">
+				<h2 class="post-title"><a href="#"><?=$hdr?></a></h2>
+				<p>
+				   Личный кабинет пользователя {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) 
+				   Дата регистрации: {{user.profile.data_of_registration}} Cтатус пользователя: 
+				   {% if user.profile.status_of_user == 'SU' %} одиночный пользователь 
+				   {% elif user.profile.status_of_user == 'GM' %} член группы 
+				   {% elif user.profile.status_of_user == 'TL' %} руководитель группы 
+				   {% endif %} 
+				</p>
+				<p>
+				   Вы посещали свой личный кабинет {{ num_seanses }}{% if num_seanses == 1 %} раз{% else %} раз{% endif %}. Время последнего визита: {{time_of_last_visit}}
+				   <!--
+				   Время входа: {{time_of_begin}}
+				   -->
+				</p>
+				<p>
+				   
+				</p>
+				<p>
+					<a class="btn btn-light" href="{% url 'logged_out' %}" role="button">Выйти из личного кабинета</a>
+				</p>
+
 			</div>
 		</div>
-	</div>	
--->
+	</div>
+</div>
+
     {% block content %}
     {% endblock %}
 
