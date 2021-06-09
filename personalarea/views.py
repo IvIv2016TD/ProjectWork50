@@ -3,22 +3,9 @@ from django.contrib.auth import logout
 from accounts.models import Profile, Seanses
 from datetime import datetime
 
-from .forms import NumberOfPoints, SimpleForm
+from .forms import NumberOfPoints, UsersSeanses
 
 # Create your views here.
-
-#def user_param(request):
-#    global tdicprsar
-#    
-#    user = request.user.username
-#    tdicprsar = {'username':user}
-#    user_seanses = Seanses.objects.filter(user=user)
-#    num_seanses = len(user_seanses)
-#    tdicprsar.update({'num_seanses':num_seanses})
-#    time_of_last_visit = user_seanses.values_list('time_of_begin', flat=True).last()
-#    tdicprsar.update({'time_of_last_visit':time_of_last_visit})
-#    tdicprsar.update({'time_of_begin':datetime.now()})
-#    return
 
 def prsar_view(request):
     
@@ -27,25 +14,15 @@ def prsar_view(request):
     user = request.user.username
     tdicprsar = {'username':user}
     user_seanses = Seanses.objects.filter(user=user)
+    tdicprsar.update({'user_seanses':user_seanses})	
     num_seanses = len(user_seanses)
     tdicprsar.update({'num_seanses':num_seanses})
     time_of_last_visit = user_seanses.values_list('time_of_begin', flat=True).last()
     tdicprsar.update({'time_of_last_visit':time_of_last_visit})
     tdicprsar.update({'time_of_begin':datetime.now()})
 
-#    user_param(request)
-
     number_of_points_write = 0
     tdicprsar.update({'number_of_points_write':number_of_points_write})
-#    if request.method == "POST":
-#        form = NumberOfPoints(request.POST)
-#        if form.is_valid():
-#            number_of_points_write = form.cleaned_data.get('number_of_points')
-#            tdicprsar.update({'number_of_points_write':number_of_points_write})
-#            write_influxDB(number_of_points_write)
-#    else:
-#            form = NumberOfPoints()
-#    tdicprsar.update({'form':form})
     number_of_points_read = 0
     tdicprsar.update({'number_of_points_read':number_of_points_read})	
     return render(request, 'prsar.html', context=tdicprsar)
@@ -80,7 +57,6 @@ def write_influxDB():
     max = 15
     for item in range(tdicprsar['number_of_points_write']):
         hr = 70 + random.randint(min, max)
-        #p = influxdb_client.Point(tdicprsar['measurement']).tag("username", tdicprsar['username'], "location", tdicprsar['location'], "conditions", tdicprsar['conditions']).field("hr_per_minute", hr)
         p = influxdb_client.Point(tdicprsar['measurement']).tag("username", tdicprsar['username']).tag("location", tdicprsar['location']).tag("conditions", tdicprsar['conditions']).field("hr_per_minute", hr)
         write_api.write(bucket=bucket, org=org, record=p)	
 
@@ -113,12 +89,22 @@ def read_influxDB():
 	
 def work_with_seanses(request):
 
-    if request.method == "POST":
-        form = SimpleForm(request.POST)
+    if request.POST:
+        form = UsersSeanses(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
         if form.is_valid():
-            birth_year = form.cleaned_data.get('birth_year')
+            #birth_year = form.cleaned_data.get('birth_year')
+            #seanses_of_user = form.cleaned_data.get('seanses_of_user')
+            #conditions = form.cleaned_data.get('conditions')
+            #location = form.cleaned_data.get('location')
+            tdicprsar.update({'test_POST':'conditionsV'})
+            #tdicprsar.update({'seanses_of_user':seanses_of_user})
+            #tdicprsar.update({'location':conditions})
+            seanses_of_user = form.cleaned_data.get('seanses_of_user')
+            #location = form.cleaned_data.get('location')
+            tdicprsar.update({'seanses_of_user':seanses_of_user})
     else:
-            form = SimpleForm()
+        form = UsersSeanses(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+        tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form':form})    
     return render(request, 'personalarea/work_with_seanses.html', context=tdicprsar)
 

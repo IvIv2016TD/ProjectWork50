@@ -12,18 +12,27 @@
 	  
       <form method="post">
       {% csrf_token %}
-
-	  {{SimpleForm}}
+<!--
+	  {{UsersSeanses_Init}}
+-->	  
       {{ form|crispy }}
 
       <p>
-	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB</button>
+	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB </button>
       </p>
 
       </form>
 	  
 	  <p>
-		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
+		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} . {{test_POST}}
+	  </p>
+
+	  <p>
+		Сеанс пользователя: {{seanses_of_user}} . Тест модели {{location}}
+	  </p>
+
+	  <p>
+		Тест полей: {{seanses_of_user}} . Тест модели {{seanses_of_user}}
 	  </p>	  
 	  
 	</div>
