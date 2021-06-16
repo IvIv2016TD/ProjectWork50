@@ -8,7 +8,7 @@
   <div class="row justify-content-around">
     <div class="card">
     <div class="card-body">
-      <h5 class="card-title mb-2 text-muted">Выбор сеанса работы</h5>
+      <h5 class="card-title mb-2 text-muted">Выбор сеансов для обработки</h5>
 	  
       <form method="post">
       {% csrf_token %}
@@ -18,7 +18,7 @@
       {{ form|crispy }}
 
       <p>
-	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB </button>
+	  <button type="submit" class="btn btn-light">Выбрать сеансы для обработки</button>
       </p>
 
       </form>

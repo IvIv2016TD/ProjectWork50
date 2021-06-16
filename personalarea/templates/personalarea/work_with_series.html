@@ -8,8 +8,8 @@
   <div class="row justify-content-around">
     <div class="card">
     <div class="card-body">
-      <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
-	  
+      <h5 class="card-title mb-2 text-muted">Выбор серий INfluxDB для формирования DataFrame</h5>
+<!--	  
       <form method="post">
       {% csrf_token %}
 
@@ -21,11 +21,80 @@
       </p>
 
       </form>
+-->	  
+	  <p>
+		Пользователем {{user}} выбраны следующие сеансы {{seanses_of_user}}: 
+	  </p>	  
+
+	  <p>
+		Start время {{TestS}} Stop время {{TestE}}: 
+	  </p>
+
+	  <p>
+		Запрос {{TestA}}
+	  </p>
+
+	  <p>
+		Количество таблиц {{TestRR}}, длина таблицы {{TestRT}}
+	  </p>
+
+	  <p>
+		Список значений тега 'location' {{list_location}}
+	  </p>
 	  
 	  <p>
-		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
-	  </p>	  
-	  
+		Список значений тега 'username' {{list_username}}
+	  </p>
+
+	  <p>
+		Длина списка 'list_username' {{TestUN}}
+	  </p>
+
+	  <p>
+		Список 'names' {{TestUP_UN}}
+	  </p>
+
+	  <p>
+		Список значений тега 'conditions' {{list_conditions}}
+	  </p>
+
+	  <p>
+		Строка фильтра имён {{TestNSQ}}
+	  </p>
+
+	  <p>
+		Строка фильтра локаций {{TestLSQ}}
+	  </p>
+
+	  <p>
+		Строка фильтра условий {{TestСSQ}}
+	  </p>
+
+	  <p>
+		Полная строка фильтра {{TestASQ}}
+	  </p>
+
+<!--
+	  <ul>
+		{% for seanse in points_list %}
+			<li>{{ seanse }}</li>
+		{% endfor %}
+	  </ul>
+-->	
+
+      <form method="post">
+      {% csrf_token %}
+
+	  {{UsersPoints}}
+  
+      {{ form|crispy }}
+
+      <p>
+	  <button type="submit" class="btn btn-light">Выбрать точки из InfluxDB</button>
+      </p>
+
+      </form>
+  
 	</div>
     </div>	  
   </div>
@@ -39,6 +108,10 @@
 	  
       <p>
 	    Точки тестовой последовательности InfluxDB. {{user}} {{ current_site }}
+	  </p>
+
+	  <p>
+		Выбранные серии в DataFrame {{result|safe}}
 	  </p>
 	  
 	</div>

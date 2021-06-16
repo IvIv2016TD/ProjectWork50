@@ -42,6 +42,12 @@
 	    Точки тестовой последовательности InfluxDB. {{user}} {{ current_site }}
 	  </p>
 	  
+	  <ul>
+		{% for point in points_list %}
+			<li>{{ point }}</li>
+		{% endfor %}
+	  </ul>
+	  
 	</div>
     </div>	  
   </div>

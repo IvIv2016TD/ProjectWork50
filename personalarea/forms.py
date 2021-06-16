@@ -1,6 +1,6 @@
 from django import forms
 from datetime import *
-#from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 #from django.contrib.auth.forms import UserCreationForm
 
 from accounts.models import Profile, Seanses
@@ -19,7 +19,12 @@ CONDITIONS = [
     ('extreme_load', 'Экстремальная нагрузка'),
 ]
 
-
+CONDITIONS_DICT = {
+    'rest': 'Покой',
+    'mixed_load': 'Смешанная нагрузка',
+    'training': 'Тренировка',
+    'extreme_load': 'Экстремальная нагрузка',
+}
 
 class NumberOfPoints(forms.Form):
     #number_of_points = 1000
@@ -62,4 +67,47 @@ class UsersSeanses(forms.Form):
 
     class Meta:
         model = Seanses
-        fields = ('id', 'time_of_begin',)		
+        fields = ('id', 'time_of_begin',)
+
+class UsersPoints(forms.Form):
+
+    names_of_user = forms.MultipleChoiceField(label='Имена пользователей', help_text='Выберите имена пользователей с сериями которых будете работать')
+    names_of_locations = forms.MultipleChoiceField(label='Локации', help_text='Выберите локации с сериями которых будете работать')
+    names_of_conditions = forms.MultipleChoiceField(label='Условия', help_text='Выберите условия с сериями которых будете работать')    
+	
+    def __init__(self, *args, **query_params_dict):
+    #def __init__(self, **query_params_dict):
+        locations = query_params_dict.pop('locations')
+        conditions = query_params_dict.pop('conditions')
+        names = query_params_dict.pop('username')		
+        super(UsersPoints, self).__init__(*args, **query_params_dict)
+        #super(UsersPoints, self).__init__(**query_params_dict)
+
+        #test_list = [("1", "Один"), ("2", "Два"), ("3", "Три")]
+
+        names_list = []
+        i = 0
+        for item in names:
+            id_user = User.objects.filter(username=item).values_list('id')
+            user_first_name = Profile.objects.filter(user=id_user[0][0]).values_list('first_name')
+            user_last_name = Profile.objects.filter(user=id_user[0][0]).values_list('last_name')
+            user_full_name = user_first_name[0][0] + " " + user_last_name[0][0]
+            #lni = item + " " + str(id_user[0][0]) + " " + user_full_name
+            names_list.append((item, user_full_name))
+            i = i + 1
+
+        locations_list = []
+        i = 0
+        for item in locations:
+            locations_list.append((item, item))
+            i = i + 1
+
+        conditions_list = []
+        i = 0
+        for item in conditions:
+            conditions_list.append((item, CONDITIONS_DICT[item]))
+            i = i + 1
+        
+        self.fields['names_of_user'].choices = names_list
+        self.fields['names_of_locations'].choices = locations_list
+        self.fields['names_of_conditions'].choices = conditions_list
