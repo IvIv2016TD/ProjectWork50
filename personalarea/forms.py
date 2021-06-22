@@ -3,7 +3,7 @@ from datetime import *
 from django.contrib.auth.models import User
 #from django.contrib.auth.forms import UserCreationForm
 
-from accounts.models import Profile, Seanses
+from accounts.models import Profile, Seanses, Groupshr
 
 BIRTH_YEAR_CHOICES = ['1980', '1981', '1982']
 FAVORITE_COLORS_CHOICES = [
@@ -25,6 +25,12 @@ CONDITIONS_DICT = {
     'training': 'Тренировка',
     'extreme_load': 'Экстремальная нагрузка',
 }
+
+WORKS_LIVE = [
+    ('0', 'Зарегистрировать новую группу'),
+    ('1', 'Выключить/включить старую группу'),
+    ('2', 'Выключить/включить пользователя'),
+]
 
 class NumberOfPoints(forms.Form):
     #number_of_points = 1000
@@ -110,4 +116,33 @@ class UsersPoints(forms.Form):
         
         self.fields['names_of_user'].choices = names_list
         self.fields['names_of_locations'].choices = locations_list
-        self.fields['names_of_conditions'].choices = conditions_list
+        self.fields['names_of_conditions'].choices = conditions_list		
+
+class RegistrationGrouphr(forms.Form):
+
+    name_of_grouphr = forms.CharField(max_length=100, label='Имя группы', help_text='Имя регистрируемой группы', required=False)
+    comment_of_TL = forms.CharField(max_length=1000, label='Комментарий руководителя', help_text='Комментарий руководителя группы', required=False)
+	
+    def __init__(self, *args, **username_dict):
+        user_auth_name = username_dict.pop('username')
+        tb_test = username_dict.pop('tb')
+        super(RegistrationGrouphr, self).__init__(*args, **username_dict)
+
+        choices_of_seanses = []
+        user_seanses = Seanses.objects.filter(user=user_auth_name)
+        delta = timedelta(hours=7, minutes=0)
+        i = 0
+        for item in user_seanses:
+            n_seanse = user_seanses.values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')[i][0]
+            begin_seanse = user_seanses.values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')[i][1] + delta
+            end_seanse = user_seanses.values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')[i][2] + delta
+            points_write = user_seanses.values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')[i][3]
+            points_read = user_seanses.values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')[i][4]
+            choice_str = begin_seanse.strftime('%d/%m/%Y, %H:%M:') + "  " + end_seanse.strftime('%d/%m/%Y, %H:%M:') + "  " + str(points_write)+ "  " + str(points_read)			
+            choices_of_seanses.append ((n_seanse, choice_str))
+            i = i + 1
+
+        #self.fields['seanses_of_user'].choices = choices_of_seanses
+
+class WorksForm(forms.Form):
+     works_live = forms.ChoiceField(label='Операции', widget=forms.RadioSelect(), choices=WORKS_LIVE, help_text='Выберите операцию над группой/пользователем', required=False)

@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth import logout
-from accounts.models import Profile, Seanses
+from django.shortcuts import redirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
+from accounts.models import Profile, Seanses, Groupshr
 from datetime import datetime, timedelta
 from pandas import *
 
-from .forms import NumberOfPoints, UsersSeanses, UsersPoints
+from .forms import NumberOfPoints, UsersSeanses, UsersPoints, WorksForm, RegistrationGrouphr
 
 #import "influxdata/influxdb/schema"
 
@@ -13,6 +16,18 @@ ORG = "PM72"
 TOKEN = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
 URL = "https://eu-central-1-1.aws.cloud2.influxdata.com/"
 MEASUREMENT = "hr_measurement"
+
+WORKS_LIVE = [
+    ('0', 'Зарегистрировать новую группу'),
+    ('1', 'Выключить/включить старую группу'),
+    ('2', 'Выключить/включить пользователя'),
+]
+
+WORKS_LIVE_DICT = {
+    '0':'Зарегистрировать новую группу',
+    '1':'Выключить/включить старую группу',
+    '2':'Выключить/включить пользователя',
+}
 
 def prsar_view(request):
     
@@ -31,8 +46,94 @@ def prsar_view(request):
     number_of_points_write = 0
     tdicprsar.update({'number_of_points_write':number_of_points_write})
     number_of_points_read = 0
-    tdicprsar.update({'number_of_points_read':number_of_points_read})	
+    tdicprsar.update({'number_of_points_read':number_of_points_read})
+
+    tl_groups = Groupshr.objects.filter(user=user)
+    n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
+    tdicprsar.update({'n_grouphr':n_grouphr}) 
+
+    if request.POST:
+        form = WorksForm(request.POST)
+        if form.is_valid():
+            #tdicprsar.update({'test_POST':'conditionsV'})
+            works_live = form.cleaned_data.get('works_live')
+            #tdicprsar.update({'works_live_str':WORKS_LIVE_DICT[works_live]})
+            tdicprsar.update({'works_live':works_live})
+            if works_live == '0':
+                tdicprsar.update({'works_live_test':works_live})
+                tdicprsar.update({'TestGC':'prsar_view'})
+                form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+                tdicprsar.update({'form_0':form_0})
+                return render(request, 'personalarea/prsar_reggr.html', context=tdicprsar)
+                #tl_groups = Groupshr.objects.filter(user=user)
+                #n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
+                #tdicprsar.update({'n_grouphr':n_grouphr})                
+                #return redirect('prsar_reggr.html')
+                #prsar_reggr_view(request)
+                #return render(request, 'prsar_reggr.html', context=tdicprsar)
+                #if request.POST:
+                #    form_0 = RegistrationGroupHR(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+                #    if form_0.is_valid():
+                #        #tdicprsar.update({'test_POST':'conditionsV'})
+                #        name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
+                #        comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
+                #        tdicprsar.update({'name_of_grouphr':name_of_grouphr})
+                #        tdicprsar.update({'comment_of_TL':comment_of_TL})
+                #        return render(request, 'prsar_reggr.html', context=tdicprsar)
+                #        #return HttpResponseRedirect('http://yandex.ru/')
+                #else:
+                #    form_0 = RegistrationGroupHR(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+                #    #tdicprsar.update({'test_POST':'conditionsW'})
+                #tdicprsar.update({'form_0':form_0})
+                #tdicprsar.update({'prsar_reggr_view':'prsar_reggr_view'})
+                ##return render(request, 'prsar_reggr.html', context=tdicprsar)
+                ##return HttpResponseRedirect('http://yandex.ru/')				
+    else:
+        form = WorksForm()
+        works_live = "-1"
+        #tdicprsar.update({'test_POST':'conditionsW'})
+    tdicprsar.update({'form':form})
+    tdicprsar.update({'WORKS_LIVE':WORKS_LIVE})
+
+    #if works_live == '0':
+    #    if request.POST:
+    #        form_0 = RegistrationGroupHR(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+    #        if form_0.is_valid():
+    #            #tdicprsar.update({'test_POST':'conditionsV'})
+    #            name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
+    #            comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
+    #            tdicprsar.update({'name_of_grouphr':name_of_grouphr})
+    #            tdicprsar.update({'comment_of_TL':comment_of_TL})
+    #    else:
+    #        form_0 = RegistrationGroupHR(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+    #        #tdicprsar.update({'test_POST':'conditionsW'})
+    #    tdicprsar.update({'form_0':form_0})
+
+	
+    #elif works_live == 1:
+        
+    #elif works_live == 2:		
+
     return render(request, 'prsar.html', context=tdicprsar)
+
+def prsar_reggr_view(request):
+    tdicprsar.update({'TestGC':'prsar_reggr_view'})
+    tdicprsar.update({'TestPRV':prv})
+
+    if request.POST:
+        #form_0 = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+        if tdicprsar['form_0'].is_valid():
+            #tdicprsar.update({'test_POST':'conditionsV'})
+            name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
+            comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
+            tdicprsar.update({'name_of_grouphr':name_of_grouphr})
+            tdicprsar.update({'comment_of_TL':comment_of_TL})
+    else:
+        form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+       #tdicprsar.update({'test_POST':'conditionsW'})
+    tdicprsar.update({'form_0':form_0})
+
+    return render(request, 'prsar_reggr.html', context=tdicprsar)
 	
 def logged_out_view(request):
 
@@ -410,3 +511,13 @@ def testing(request):
             form = NumberOfPoints()
     tdicprsar.update({'form':form})
     return render(request, 'personalarea/testing.html', context=tdicprsar)
+	
+def grouphr_create(request):
+    tdicprsar.update({'TestGC':'grouphr_create'})
+    form = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+    context = {'form': form}
+    html_form = render_to_string('includes/partial_grouphr_create.html',
+        context,
+        request=request,
+    )
+    return JsonResponse({'html_form': html_form})

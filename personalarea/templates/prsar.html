@@ -1,6 +1,12 @@
 <!-- templates/about_test.html -->
 {% extends 'base_prsar.html' %}
 {% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'static/js/grouphr.js' %}"></script>
+{% endblock %}
  
 {% block content %}
 
@@ -9,6 +15,227 @@
     <div class="card">
     <div class="card-body">
       <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
+
+<!--	  
+	  <script type="text/javascript">
+		alert("Javacript подключен"); 
+	  </script>
+-->
+
+
+	  
+      <p>
+		{% if user.profile.status_of_user == 'SU' %} 
+		  Выберите сеансы для обработки на странице Работа с сеансами.
+		{% elif user.profile.status_of_user == 'GM' %}
+          Выберите группу, членом которой хотите стать.		
+		{% elif user.profile.status_of_user == 'TL' %} 
+		  Работа с группами.
+		  
+				<p>
+					Пользователь {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) управляет следующими группами:
+				</p>				
+<!--
+				<ul>
+					{% for grouphr in n_grouphr %}
+						<li>{{ grouphr }}</li>
+					{% endfor %}
+				</ul>
+-->
+<!--
+				<table class="table" id="book-table">
+				  <thead>
+				    <tr>
+					  <th>Имя группы</th>
+					  <th>Дата/время регистрации</th>
+					  <th>Комментарий руководителя</th>
+					  <th>Действующая группа</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					{% for grouphr in n_grouphr %}
+					  <tr>
+						<td>{{ grouphr.0 }}</td>
+						<td>{{ grouphr.1 }}</td>
+						<td>{{ grouphr.2 }}</td>
+						<td>{{ grouphr.3 }}</td>
+					  </tr>
+					{% empty %}
+					  <tr>
+						<td colspan="7" class="text-center bg-warning">Нет групп</td>
+					  </tr>
+					{% endfor %}
+				  </tbody>
+				</table>
+-->
+<!--
+			{% endif %}
+-->	
+
+<!--	  
+			<form method="post">
+			{% csrf_token %}
+			{{ form|crispy }}
+            <input type="hidden" name="next" value="{{ "prsar_reggr" }}">
+
+			<button type="submit" class="btn btn-ligth">
+-->
+<!--			
+			
+			<button type="submit" class="btn btn-ligth js-create-grouphr" data-url="{% url 'grouphr_create' %}">
+
+-->
+<!--
+			  Выбрать
+			</button>
+
+
+			</form>
+-->
+			
+			<p>
+				Выбран вариант: {{works_live_str}}. Функция: {{TestGC}} 
+			</p>
+					
+
+			<label>Операции</label>
+			<select class="form-control" id = "operations">
+				<option selected="true" disabled="disabled">Выберите операцию</option>
+				{% for WL in WORKS_LIVE %}
+					<option value = {{WL.0}}>{{WL.1}}</option>
+				{% endfor %}
+			</select>
+
+			<div class="col-sm text-center">
+				<button id="js-button" class="btn btn-outline-primary">Выбрать операцию</button>
+			</div>
+			<div class="col-sm" id="js-result">
+				Выбрана операция: 
+			</div>
+
+		<script type="text/javascript">
+			//alert("Javacript подключен");
+			$(document).ready(function() {
+			//	alert("Javacript подключен");
+				console.log('Готово!');
+			});
+			//console.log($('.operations option:selected').text());
+			//$('.operations option:selected').text();
+			//alert("Javacript подключен");
+			// переменная numbers, содержащая массив чисел
+			var numbers = [-7, 4, 1, 9, -2];
+			// вызов глобального метода jQuery $.each
+			$.each(numbers, function(index, value) {
+				if (value < 0) {
+					console.log(value);
+				}
+			});
+			$('body').append('<div style="text-align: center; font-size: 20px;">Я люблю jQuery</div>');
+			var selectfc = $('select.form-control');
+			console.log(selectfc);
+			var count = $('select.form-control').length;
+			console.log(count);
+			var resselect = $('#operations option:selected').text();
+			console.log(resselect);
+		</script>
+<!--		
+<div class="row">
+	<div class="col-sm">
+		<select id="select" class="form-control" name="fruct">
+			<option value="1">яблоко</option>
+			<option value="2" selected>апельсин</option>	
+			<option value="3">виноград</option>	
+		</select>	
+	</div>
+	<div class="col-sm text-center">
+		<button id="js-button" class="btn btn-outline-primary">Получить value</button>
+	</div>
+	<div class="col-sm" id="js-result">
+	   	Результат: 
+	</div>
+</div>
+-->
+<link rel="stylesheet" href="https://snipp.ru/cdn/bootstrap/4.3/bootstrap.min.css">
+<style type="text/css">
+#js-result {
+	font-size: 16px;
+	line-height: 38px;
+	color: green;
+}
+</style>
+
+<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+<script>
+$('#js-button').click(function(){
+	//var value = $('#select').val();
+	var value = $('#operations option:selected').text();
+	$('#js-result').html('Выбрана операция: ' + value);
+});
+</script>
+
+			
+<!--			
+			<p>
+				<button type="button" class="btn btn-primary js-create-grouphr" data-url="{% url 'grouphr_create' %}">
+				<span class="glyphicon glyphicon-plus"></span>
+				Новая группа
+				</button>
+			</p>
+-->			
+<!--
+		<script src="grouphr.js"></script>			
+-->
+<!--
+		<script type="text/javascript">
+
+alert("Javacript подключен");
+$(function () {
+
+  $(".js-create-grouphr").click(function () {
+    $.ajax({
+      url: 'grouphr_create/',
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-book").modal("show");
+      },
+      success: function (data) {
+        $("#modal-book .modal-content").html(data.html_form);
+      }
+    });
+  });
+
+});
+			
+		</script>
+-->
+<!--
+		<div class="modal fade" id="modal-book">
+			<div class="modal-dialog">
+				<div class="modal-content">
+
+				</div>
+			</div>
+		</div>
+-->
+<!--
+			{% if works_live == '0' %}
+-->			
+
+			
+<!--			
+	  <p>
+		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
+	  </p>
+-->	 
+<!--
+			<p>
+				Имя группы: {{name_of_grouphr}}. Комментарий руководителя: {{comment_of_TL}}.
+			</p>
+--> 
+		{% endif %} 
+	  </p>	  
+	  
 <!--	  
       <form method="post">
       {% csrf_token %}
@@ -25,12 +252,13 @@
 	  <p>
 		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
 	  </p>	  
-	  
+-->	  
 	</div>
     </div>	  
   </div>
 </div>
--->
+
+<!--
 <div class="container">
   <div class="row justify-content-around">
     <div class="card">
@@ -45,5 +273,5 @@
     </div>	  
   </div>
 </div>
-	  
+-->	  
 {% endblock content %}

@@ -58,3 +58,25 @@ def update_profile_signal(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
     instance.profile.save()
+	
+class Groupshr(models.Model):
+
+    user = models.CharField(max_length=100, blank=True)
+    name_of_grouphr = models.CharField(max_length=100, blank=True)
+    time_of_registration = models.DateTimeField(default=timezone.now())
+    comment_of_TL = models.CharField(max_length=1000, blank=True)
+    operating_grouphr = models.BooleanField(default=False)
+    #time_of_closing = models.DateTimeField(auto_now=True)
+    #number_of_points_write = models.IntegerField(default=0)
+    #number_of_points_read = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "Groups of Users"
+    
+    @classmethod
+    def create_grouphr(cls, name_user, name_of_grouphr, time_of_registration, comment_of_TL):
+        grouphr = cls(user = name_user, name_of_group = name_of_grouphr, 
+                    time_of_registration = time_of_registration, 
+                    comment_of_TL = comment_of_TL,
+					operating_grouphr = True)
+        return grouphr
