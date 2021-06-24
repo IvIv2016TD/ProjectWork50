@@ -19,8 +19,8 @@ MEASUREMENT = "hr_measurement"
 
 WORKS_LIVE = [
     ('0', 'Зарегистрировать новую группу'),
-    ('1', 'Выключить/включить старую группу'),
-    ('2', 'Выключить/включить пользователя'),
+    ('1', 'Отключить/подключить старую группу'),
+    ('2', 'Отключить/подключить пользователя'),
 ]
 
 WORKS_LIVE_DICT = {
@@ -52,19 +52,26 @@ def prsar_view(request):
     n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
     tdicprsar.update({'n_grouphr':n_grouphr}) 
 
-    if request.POST:
-        form = WorksForm(request.POST)
+    tdicprsar.update({'name_of_grouphr':'form.not_POST'})
+    if request.POST:# and request.is_ajax():
+        #form = WorksForm(request.POST)
+        tdicprsar.update({'name_of_grouphr':'form.POST'})
+        form = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
         if form.is_valid():
+            name_of_grouphr = form.cleaned_data.get('name_of_grouphr')
+            tdicprsar.update({'name_of_grouphr':'form.is_valid'})
+            form.save()
+            #return JsonResponse({"name_of_grouphr": name_of_grouphr}, status=200)
             #tdicprsar.update({'test_POST':'conditionsV'})
-            works_live = form.cleaned_data.get('works_live')
+            #works_live = form.cleaned_data.get('works_live')
             #tdicprsar.update({'works_live_str':WORKS_LIVE_DICT[works_live]})
-            tdicprsar.update({'works_live':works_live})
-            if works_live == '0':
-                tdicprsar.update({'works_live_test':works_live})
-                tdicprsar.update({'TestGC':'prsar_view'})
-                form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-                tdicprsar.update({'form_0':form_0})
-                return render(request, 'personalarea/prsar_reggr.html', context=tdicprsar)
+            #tdicprsar.update({'works_live':works_live})
+            #if works_live == '0':
+            #    tdicprsar.update({'works_live_test':works_live})
+            #    tdicprsar.update({'TestGC':'prsar_view'})
+            #    form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+            #    tdicprsar.update({'form_0':form_0})
+            #    return render(request, 'personalarea/prsar_reggr.html', context=tdicprsar)
                 #tl_groups = Groupshr.objects.filter(user=user)
                 #n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
                 #tdicprsar.update({'n_grouphr':n_grouphr})                
@@ -87,13 +94,19 @@ def prsar_view(request):
                 #tdicprsar.update({'form_0':form_0})
                 #tdicprsar.update({'prsar_reggr_view':'prsar_reggr_view'})
                 ##return render(request, 'prsar_reggr.html', context=tdicprsar)
-                ##return HttpResponseRedirect('http://yandex.ru/')				
+                ##return HttpResponseRedirect('http://yandex.ru/')
+        else:
+            errors = form.errors.as_json()
+            tdicprsar.update({'name_of_grouphr':'form.is_not_valid'})
+            return JsonResponse({"errors": errors}, status=400)		
     else:
-        form = WorksForm()
-        works_live = "-1"
+        #form = WorksForm()
+        form = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+        #works_live = "-1"
         #tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form':form})
     tdicprsar.update({'WORKS_LIVE':WORKS_LIVE})
+    
 
     #if works_live == '0':
     #    if request.POST:

@@ -42,7 +42,7 @@
 					{% endfor %}
 				</ul>
 -->
-<!--
+
 				<table class="table" id="book-table">
 				  <thead>
 				    <tr>
@@ -67,7 +67,7 @@
 					{% endfor %}
 				  </tbody>
 				</table>
--->
+
 <!--
 			{% endif %}
 -->	
@@ -105,14 +105,19 @@
 					<option value = {{WL.0}}>{{WL.1}}</option>
 				{% endfor %}
 			</select>
-
+<!--
 			<div class="col-sm text-center">
+-->
+			<div class="btn btn-ligth">
+<!--
 				<button id="js-button" class="btn btn-outline-primary">Выбрать операцию</button>
+-->
+				<button id="js-button" class="btn btn-ligth">Выбрать операцию</button>
 			</div>
 			<div class="col-sm" id="js-result">
 				Выбрана операция: 
 			</div>
-
+<!--
 		<script type="text/javascript">
 			//alert("Javacript подключен");
 			$(document).ready(function() {
@@ -138,6 +143,7 @@
 			var resselect = $('#operations option:selected').text();
 			console.log(resselect);
 		</script>
+-->
 <!--		
 <div class="row">
 	<div class="col-sm">
@@ -155,7 +161,9 @@
 	</div>
 </div>
 -->
+<!--
 <link rel="stylesheet" href="https://snipp.ru/cdn/bootstrap/4.3/bootstrap.min.css">
+-->
 <style type="text/css">
 #js-result {
 	font-size: 16px;
@@ -163,57 +171,225 @@
 	color: green;
 }
 </style>
-
+<!--
 <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+-->
+
+			<div class="col-sm" id="name_group">
+				Имя группы: 
+			</div>
+			<div class="col-sm" id="name_form">
+				Имя формы: {{name_of_grouphr}}
+			</div>			
+
 <script>
+//$("#par1").hide();
+//$("#reg_group").hide();
+$(function () {	
 $('#js-button').click(function(){
 	//var value = $('#select').val();
-	var value = $('#operations option:selected').text();
-	$('#js-result').html('Выбрана операция: ' + value);
+	var value_t = $('#operations option:selected').text();
+	var value_v = $('#operations option:selected').val();
+	$('#js-result').html('Выбрана операция: ' + value_t + '  ' + value_v);
+	//$("#par1").hide();
+	if (value_v == "0") {
+		//$("#reg_group").show(); // зарегистрировать новую группу
+		$("#new_group").show(); // зарегистрировать новую группу
+	} else if (value_v == "1") {
+		$("#turn_off_on_group").show(); // отключить/подключить старую группу
+	} else if (value_v == "2") {
+		$("#turn_off_on_user").show(); // отключить/подключить пользователя
+	}
+	//$("#par1").fadeIn(3000);
+	//$("#reg_group").fadeIn(3000);
+	//$("#par1").hide();
+	//$("#reg_group").hide();	
 });
+});
+
+
+
 </script>
 
 			
-<!--			
+			
 			<p>
+<!--
 				<button type="button" class="btn btn-primary js-create-grouphr" data-url="{% url 'grouphr_create' %}">
+-->
+				<button type="button" class="btn btn-primary js-create-grouphr">
 				<span class="glyphicon glyphicon-plus"></span>
 				Новая группа
 				</button>
 			</p>
+<!--
+<p id="par1" style="font-size:20px;">Я абзац к которому будут применяться различные эффекты.</p>
 -->			
 <!--
 		<script src="grouphr.js"></script>			
 -->
-<!--
+
 		<script type="text/javascript">
 
-alert("Javacript подключен");
 $(function () {
+$(document).ready(function(){
+	alert("document");
+	$("#new_group").hide();
+	$("#reg_group").hide();
+	$("#turn_off_on_group").hide();
+	$("#turn_off_on_user").hide();
+   });
+});   
 
+$(function () {	
+$('#reg_new_group').click(function(){
+	//var value = $('#select').val();
+	var name_of_group = $('#name_new_group').val();
+	var comment_of_group = $('#comment_new_group').val();
+	$('#name_group').html('Имя группы: ' + name_of_group + '  Комментарий: ' + comment_of_group);
+	alert("reg_new_group");
+});
+});
+
+$(function () {
   $(".js-create-grouphr").click(function () {
+    alert("js-create-grouphr");
+	$("#reg_group").hide();
+	$("#turn_off_on_group").hide();
+	$("#turn_off_on_user").hide();
     $.ajax({
       url: 'grouphr_create/',
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
-        $("#modal-book").modal("show");
+	    //$("#reg_group").fadeOut(3000);
+        //$("#reg_group").modal("show");
       },
       success: function (data) {
         $("#modal-book .modal-content").html(data.html_form);
       }
     });
   });
-
-});
-			
+});			
 		</script>
+<!--
+			<div class="container" id="reg_group">
+				<div class="row justify-content-around">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title mb-2 text-muted">Регистрация новой группы</h5>
+	  
+							<p>
+								<form name="test" method="post">  
+									{% csrf_token %}
+									<p><b>Имя группы:</b><br>
+										<input type="text" size="40" id="name_new_group">
+									</p>
+									<p>Комментарий руководителя группы:<Br>
+										<textarea name="comment" cols="40" rows="3" id="comment_new_group"></textarea></p>
+									<p><input type="submit" value="Зарегистрировать группу" id="reg_new_group">
+									<input type="reset" value="Очистить" id="clear_new_group"></p>
+								</form>
+							</p>
+	  
+						</div>
+					</div>	  
+				</div>
+			</div>
+
+
+			<div class="container" id="turn_off_on_group">
+				<div class="row justify-content-around">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title mb-2 text-muted">Отключение/подключение старой группы</h5>
+	  
+							<p>
+								<form name="test" method="post">  
+									{% csrf_token %}
+									<p><b>Имя группы:</b><br>
+										<input type="text" size="40">
+									</p>
+									<p>Комментарий руководителя группы:<Br>
+									<textarea name="comment" cols="40" rows="3"></textarea></p>
+									<p><input type="submit" value="Зарегистрировать группу">
+									<input type="reset" value="Очистить"></p>
+								</form>
+							</p>
+	  
+						</div>
+					</div>	  
+				</div>
+			</div>
+
+			<div class="container" id="turn_off_on_user">
+				<div class="row justify-content-around">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title mb-2 text-muted">Отключение/подключение пользователя</h5>
+	  
+							<p>
+								<form name="test" method="post">  
+									{% csrf_token %}
+									<p><b>Имя группы:</b><br>
+										<input type="text" size="40">
+									</p>
+									<p>Комментарий руководителя группы:<Br>
+									<textarea name="comment" cols="40" rows="3"></textarea></p>
+									<p><input type="submit" value="Зарегистрировать группу">
+									<input type="reset" value="Очистить"></p>
+								</form>
+							</p>
+	  
+						</div>
+					</div>	  
+				</div>
+			</div>
 -->
+			<div class="container" id="new_group">
+			  <div class="row justify-content-around">
+				  <div class="card">
+					  <div class="card-body">
+						  <h5 class="card-title mb-2 text-muted">Новая группа</h5>
+	  
+						  <p>
+							  <form id="RegistrationGrouphr" method="post">  
+								  {% csrf_token %}
+								  {{ form|crispy }}
+								  <input type="submit" name="contact-submit" class="btn btn-success btn-lg" />
+							  </form>
+						  </p>
+	  
+					  </div>
+				  </div>	  
+			  </div>
+			</div>
+
 <!--
 		<div class="modal fade" id="modal-book">
 			<div class="modal-dialog">
-				<div class="modal-content">
-
+				<div class="modal-content">		
+				<p>
+					Модальная форма.
+				</p>
+				<p>
+					 <form name="test" method="post">  <!-- action="input1.php">  -->
+<!--
+						{% csrf_token %}
+						<p><b>Ваше имя:</b><br>
+						<input type="text" size="40">
+						</p>
+						<p><b>Каким браузером в основном пользуетесь:</b><Br>
+						<input type="radio" name="browser" value="ie"> Internet Explorer<Br>
+						<input type="radio" name="browser" value="opera"> Opera<Br>
+						<input type="radio" name="browser" value="firefox"> Firefox<Br>
+						</p>
+						<p>Комментарий<Br>
+						<textarea name="comment" cols="40" rows="3"></textarea></p>
+						<p><input type="submit" value="Отправить">
+						<input type="reset" value="Очистить"></p>
+					</form>
+				</p>				
 				</div>
 			</div>
 		</div>
