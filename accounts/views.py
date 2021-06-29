@@ -1,11 +1,15 @@
 # accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from . forms import SignUpForm, NumberOfPoints
+from accounts.models import Profile, Seanses, Groupshr
+from personalarea.forms import RegistrationGrouphr
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http  import  HttpResponse
+from django.utils import timezone
 import datetime
 
 #from django.contrib.auth import login, authenticate
@@ -188,6 +192,8 @@ def activate(request, uidb64, token):
             return redirect('home')
         #для члена группы
         elif user.profile.status_of_user == 'GM':
+            grouphr = Groupshr.create_grouphr(user.profile.user, group_of_GM, timezone.now(), 'Член группы')
+            grouphr.save()
             login(request, user)
             return redirect('home')
         #для руководителя группы
@@ -213,7 +219,7 @@ def activate(request, uidb64, token):
         return render(request, 'activation_invalid.html')
 
 def signup_view(request):
-    global num_profiles
+    global num_profiles, group_of_GM, name_of_TL
     if request.method  == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -223,6 +229,13 @@ def signup_view(request):
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
             user.profile.status_of_user = form.cleaned_data.get('status_of_user')
+            list_return = form.cleaned_data.get('name_of_group').split()
+            #name_of_TL = list_return[0]
+            name_of_TL = list_return[0]
+            group_of_GM = list_return[1]
+            #num_profiles = {'name_of_TL':'TestUser9'} # имя руководителя выбранной группы
+            num_profiles = {'TL':name_of_TL} # имя руководителя выбранной группы
+            num_profiles = {'group_GM':group_of_GM} # имя выбранной группы
             # пользователь не сможет залогинится пока регистрация не будет подтверждена
             user.is_active = False
             user.save()
@@ -243,9 +256,9 @@ def signup_view(request):
                 msg.send()
                 num_profiles = {'upe':user.profile.email}
                 return redirect('activation_sent')
-            #для члена группы
+            #для члена группы 
             elif user.profile.status_of_user == 'GM':
-                msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [user.profile.email])         
+                msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, [User.objects.all().get(username = name_of_TL).email]) # почта руководителя выбранной группы        
                 msg.attach_alternative(message, "text/html")
                 msg.send()
                 num_profiles = {'upe':user.profile.email}
@@ -256,7 +269,7 @@ def signup_view(request):
                     [User.objects.all().get(username='admin').email]) # почта администратора         
                 msg.attach_alternative(message, "text/html")
                 msg.send()
-                num_profiles = {'upe':user.profile.email}
+                num_profiles = {'upe':user.profile.email} 
                 #num_profiles = {'upe':User.objects.all().get(username='admin').email}
                 return redirect('activation_sent_tl')
             #all_profiles = User.objects.all()

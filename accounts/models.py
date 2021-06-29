@@ -75,7 +75,7 @@ class Groupshr(models.Model):
     
     @classmethod
     def create_grouphr(cls, name_user, name_of_grouphr, time_of_registration, comment_of_TL):
-        grouphr = cls(user = name_user, name_of_group = name_of_grouphr, 
+        grouphr = cls(user = name_user, name_of_grouphr = name_of_grouphr, 
                     time_of_registration = time_of_registration, 
                     comment_of_TL = comment_of_TL,
 					operating_grouphr = True)

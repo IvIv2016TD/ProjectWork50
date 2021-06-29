@@ -14,15 +14,7 @@
   <div class="row justify-content-around">
     <div class="card">
     <div class="card-body">
-      <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
-
-<!--	  
-	  <script type="text/javascript">
-		alert("Javacript подключен"); 
-	  </script>
--->
-
-
+      <h5 class="card-title mb-2 text-muted">Работа в личном кабинете</h5>
 	  
       <p>
 		{% if user.profile.status_of_user == 'SU' %} 
@@ -31,92 +23,214 @@
           Выберите группу, членом которой хотите стать.		
 		{% elif user.profile.status_of_user == 'TL' %} 
 		  Работа с группами.
-		  
-				<p>
-					Пользователь {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) управляет следующими группами:
-				</p>				
 <!--
-				<ul>
-					{% for grouphr in n_grouphr %}
-						<li>{{ grouphr }}</li>
-					{% endfor %}
-				</ul>
--->
-
-				<table class="table" id="book-table">
-				  <thead>
-				    <tr>
-					  <th>Имя группы</th>
-					  <th>Дата/время регистрации</th>
-					  <th>Комментарий руководителя</th>
-					  <th>Действующая группа</th>
-					</tr>
-				  </thead>
-				  <tbody>
-					{% for grouphr in n_grouphr %}
-					  <tr>
-						<td>{{ grouphr.0 }}</td>
-						<td>{{ grouphr.1 }}</td>
-						<td>{{ grouphr.2 }}</td>
-						<td>{{ grouphr.3 }}</td>
-					  </tr>
-					{% empty %}
-					  <tr>
-						<td colspan="7" class="text-center bg-warning">Нет групп</td>
-					  </tr>
-					{% endfor %}
-				  </tbody>
-				</table>
-
-<!--
-			{% endif %}
--->	
-
-<!--	  
-			<form method="post">
-			{% csrf_token %}
-			{{ form|crispy }}
-            <input type="hidden" name="next" value="{{ "prsar_reggr" }}">
-
-			<button type="submit" class="btn btn-ligth">
--->
-<!--			
-			
-			<button type="submit" class="btn btn-ligth js-create-grouphr" data-url="{% url 'grouphr_create' %}">
-
--->
-<!--
-			  Выбрать
-			</button>
-
-
-			</form>
--->
-			
 			<p>
-				Выбран вариант: {{works_live_str}}. Функция: {{TestGC}} 
+				Количество групп {{TUI}} Имя 0 группы {{TUI_GN}} 
 			</p>
-					
 
-			<label>Операции</label>
-			<select class="form-control" id = "operations">
-				<option selected="true" disabled="disabled">Выберите операцию</option>
-				{% for WL in WORKS_LIVE %}
-					<option value = {{WL.0}}>{{WL.1}}</option>
+			<p>
+				Количество групп с пользователями {{TUI_UN}} 
+			</p>
+
+			<p>
+				Словарь групп {{user_inf}} 
+			</p>
+-->		  
+			<p>
+				Пользователь {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) управляет следующими группами:
+			</p>				
+
+			<table class="table" id="group-table">
+			  <thead>
+				<tr>
+				  <th>Имя группы</th>
+				  <th>Дата/время регистрации</th>
+				  <th>Комментарий руководителя</th>
+				  <th>Действующая группа</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				{% for grouphr in n_grouphr %}
+				  <tr id={{ grouphr.0 }}>
+					<td>{{ grouphr.0 }}</td>
+					<td>{{ grouphr.1 }}</td>
+					<td>{{ grouphr.2 }}</td>
+					<td>{{ grouphr.3 }}</td>
+				
+					<td>
+						<button type="button"
+							class="{{grouphr.0}} on btn btn-warning btn-sm" 
+							<span class="glyphicon glyphicon-pencil"></span> Подключить
+						</button>
+						<button type="button"
+							class="{{grouphr.0}} off btn btn-danger btn-sm" 
+							<span class="glyphicon glyphicon-trash"></span> Отключить
+						</button>
+						<button type="button"
+							class="{{grouphr.0}} show_users btn btn-danger btn-sm" 
+							<span class="glyphicon glyphicon-trash"></span> Показать пользователей
+						</button>							
+					</td>
+					
+				  </tr>
+				  <tr>
+					<td colspan="6">
+						<table class="{{grouphr.0}} show_users table" id="user-table {{grouphr.0}}">
+						  <thead>
+							<tr>
+							  <th>Имя пользователя</th>
+							  <th>Фамилия пользователя</th>
+							  <th>Дата/время регистрации</th>
+							  <th>Дата/время последнего визита</th>
+							  <th>Действующий пользователь</th>
+							</tr>							
+						  </thead>
+						  <tbody>
+							{% for user in user_inf %}
+							  <tr>
+							  							  
+							  
+								<td>{{ user.one.0 }}</td>
+							
+<!--
+								<td> Тест </td>
+
+-->								
+								<td>{{ user.0.1 }}</td>
+								<td>{{ user.grouphr.0.2 }}</td>
+								<td>{{ user.grouphr.0.3 }}</td>
+								<td>{{ user.grouphr.0.4 }}</td>
+								<td>
+									<button type="button"
+										class="{{grouphr.2}} on btn btn-warning btn-sm" 
+										<span class="glyphicon glyphicon-pencil"></span> Подключить
+									</button>
+									<button type="button"
+										class="{{grouphr.2}} off btn btn-danger btn-sm" 
+										<span class="glyphicon glyphicon-trash"></span> Отключить
+									</button>
+								</td>
+							  </tr>
+							{% empty %}
+							  <tr>
+								<td colspan="6" class="text-center bg-warning">Нет пользователей</td>
+							  </tr>
+							{% endfor %}						  
+						  </tbody>
+						</table>								
+					</td>						
+				  </tr>
+				{% empty %}
+				  <tr>
+					<td colspan="5" class="text-center bg-warning">Нет групп</td>
+				  </tr>
 				{% endfor %}
-			</select>
-<!--
-			<div class="col-sm text-center">
--->
+			  </tbody>
+			</table>
 			<div class="btn btn-ligth">
+				<button id="js-button" class="btn btn-outline-primary">Добавить новую группу</button>
+			</div>
+		{% else %}
+		
+		{% endif %}
 <!--
-				<button id="js-button" class="btn btn-outline-primary">Выбрать операцию</button>
+		<button onclick = "myFunc()">Нажми меня</button> 
 -->
-				<button id="js-button" class="btn btn-ligth">Выбрать операцию</button>
+<!--
+		<div id="log"></div>
+		<div id="log_1"></div>
+		<div id="log_2"></div>
+		<div id="log_3"></div>
+		<div id="log_4"></div>
+		<div id="log_5"></div>
+-->
+		<script>
+		
+		$( "body" ).click(function( event ) {
+			$( "#log" ).html( "clicked: " + event.target.nodeName + "  " + event.type );
+		});		
+
+		var buttons = document.getElementsByTagName("button"); //returns a nodelist
+		for (let i = 0; i < buttons.length; i++) {
+			buttons[i].addEventListener("click", function() {
+			buttonsControl(this, i);
+		}, false);
+		}
+
+		function buttonsControl(button, i) {
+			//console.log(i);
+			//console.log(button.className);
+			//$( "#log_1" ).html( "buttonsControl: " + i + "  " + button.className );
+			x=button.className.split(" ");
+			//document.write(x[2]);
+			//$( "#log_2" ).html( x[0] + ' ' + x[1] );
+			if (x[1] == "show_users") {
+				let tables = document.getElementsByTagName( "table" ); // находим элементы с тегом table
+				user_table = 'user-table ' + x[0]
+				for( let i = 1; i < tables.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+					if (tables[i].id == user_table) {
+						tables[i].style.visibility="visible";	// открываем таблицы пользователей
+					};
+				};
+				
+				button.innerText = 'Скрыть пользователей'
+				button.className = x[0] + ' hide_users ' + ' btn btn-danger btn-sm' 
+				//$( "#log_3" ).html( button.id );
+				//user_table = 'user-table TestGroup01_19'//'user-table ' + x[0]
+				//$( "#log_4" ).html( user_table );
+				//table = document.getElementsById( 'group-table' );
+				////table = document.getElementsByClassName( button.className );
+				//$( "#log_5" ).html( x[0] );
+				//table.style.visibility="visible";
+				////$("#new_group").style.visibility="visible";
+				////$("#new_group").show(); // зарегистрировать новую группу
+			} else if (x[1] == "hide_users") {
+				//$( "#log_3" ).html( button.id );
+				//$( "#log_4" ).html( button.id );
+				let tables = document.getElementsByTagName( "table" ); // находим элементы с тегом table
+				user_table = 'user-table ' + x[0];
+				//$( "#log_3" ).html( user_table + '    ' + tables[1].id );
+				for( let i = 1; i < tables.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+					if (tables[i].id == user_table) {
+						tables[i].style.visibility="collapse";	// открываем таблицы пользователей
+					};
+				};
+				button.innerText = 'Показать пользователей'
+				button.className = x[0] + ' show_users ' + ' btn btn-danger btn-sm' 				
+			};
+		};
+		
+		function myFunc() {
+			let tables = document.getElementsByTagName( "table" ); // находим элементы с тегом table
+			for( let i = 1; i < tables.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+	    //tables[i].style.border = "5px solid green"; // устанавливаем сплошную границу размером 1 пиксель зеленого цвета
+	    //tables[i].innerHTML += " **** " + i;   // добавляем текстовое содержимое первому элементу коллекции
+			tables[i].style.visibility="collapse";	// скрываем таблицы пользователей
+			}
+			//let tables = document.getElementsByTagName( "table" ); // находим элементы с тегом table
+			//for( let i = 1; i < tables.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+	    //tables[i].style.border = "5px solid green"; // устанавливаем сплошную границу размером 1 пиксель зеленого цвета
+	    //tables[i].innerHTML += " **** " + i;   // добавляем текстовое содержимое первому элементу коллекции
+			//tables[i].style.visibility="visible";	// скрываем таблицы пользователей
+			//}				
+	  ////$("#tables[0]").hide();
+	  //let trs = tables[1].getElementsByTagName( "tr" ); // находим элементы с тегом tr в таблице 1
+	  //for( let i = 0; i < trs.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+	  //  trs[i].style.border = "10px solid red"; // устанавливаем сплошную границу размером 10 пиксель красного цвета
+	  //  trs[i].innerHTML += " #### " + i;   // добавляем текстовое содержимое первому элементу коллекции
+      //  let ths = trs[i].getElementsByTagName( "th" ); // находим элементы с тегом th в заголовках в таблице 1
+		//ths[3].style.border = "20px solid blue"; // устанавливаем сплошную границу размером 20 пиксель синего цвета
+		//ths[4].style.backgroundColor="yellow";
+		//ths[2].style.visibility="hidden";
+		//ths[2].style.visibility="visible";
+	  //}
+		}
+		</script>
+<!--
+			<div class="btn btn-ligth">
+				<button id="js-button" class="btn btn-outline-primary">Добавить новую группу</button>
 			</div>
-			<div class="col-sm" id="js-result">
-				Выбрана операция: 
-			</div>
+-->
 <!--
 		<script type="text/javascript">
 			//alert("Javacript подключен");
@@ -144,26 +258,8 @@
 			console.log(resselect);
 		</script>
 -->
-<!--		
-<div class="row">
-	<div class="col-sm">
-		<select id="select" class="form-control" name="fruct">
-			<option value="1">яблоко</option>
-			<option value="2" selected>апельсин</option>	
-			<option value="3">виноград</option>	
-		</select>	
-	</div>
-	<div class="col-sm text-center">
-		<button id="js-button" class="btn btn-outline-primary">Получить value</button>
-	</div>
-	<div class="col-sm" id="js-result">
-	   	Результат: 
-	</div>
-</div>
--->
-<!--
-<link rel="stylesheet" href="https://snipp.ru/cdn/bootstrap/4.3/bootstrap.min.css">
--->
+
+
 <style type="text/css">
 #js-result {
 	font-size: 16px;
@@ -171,76 +267,51 @@
 	color: green;
 }
 </style>
-<!--
-<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
--->
 
-			<div class="col-sm" id="name_group">
-				Имя группы: 
-			</div>
-			<div class="col-sm" id="name_form">
-				Имя формы: {{name_of_grouphr}}
-			</div>			
+		<script>
 
-<script>
-//$("#par1").hide();
-//$("#reg_group").hide();
-$(function () {	
-$('#js-button').click(function(){
-	//var value = $('#select').val();
-	var value_t = $('#operations option:selected').text();
-	var value_v = $('#operations option:selected').val();
-	$('#js-result').html('Выбрана операция: ' + value_t + '  ' + value_v);
-	//$("#par1").hide();
-	if (value_v == "0") {
-		//$("#reg_group").show(); // зарегистрировать новую группу
-		$("#new_group").show(); // зарегистрировать новую группу
-	} else if (value_v == "1") {
-		$("#turn_off_on_group").show(); // отключить/подключить старую группу
-	} else if (value_v == "2") {
-		$("#turn_off_on_user").show(); // отключить/подключить пользователя
-	}
-	//$("#par1").fadeIn(3000);
-	//$("#reg_group").fadeIn(3000);
-	//$("#par1").hide();
-	//$("#reg_group").hide();	
-});
-});
-
-
-
-</script>
+		$(function () {	
+		$('#js-button').click(function(){
+			var value_t = $('#operations option:selected').text();
+			var value_v = "0"; //$('#operations option:selected').val();
+			$('#js-result').html('Выбрана операция: ' + value_t + '  ' + value_v);
+			if (value_v == "0") {
+				$("#new_group").show(); // зарегистрировать новую группу
+			} else if (value_v == "1") {
+				$("#turn_off_on_group").show(); // отключить/подключить старую группу
+			} else if (value_v == "2") {
+				$("#turn_off_on_user").show(); // отключить/подключить пользователя
+			}
+			});
+		});
+		</script>
 
 			
-			
+<!--			
 			<p>
-<!--
-				<button type="button" class="btn btn-primary js-create-grouphr" data-url="{% url 'grouphr_create' %}">
--->
 				<button type="button" class="btn btn-primary js-create-grouphr">
 				<span class="glyphicon glyphicon-plus"></span>
 				Новая группа
 				</button>
 			</p>
-<!--
-<p id="par1" style="font-size:20px;">Я абзац к которому будут применяться различные эффекты.</p>
--->			
-<!--
-		<script src="grouphr.js"></script>			
--->
+-->	
 
 		<script type="text/javascript">
 
-$(function () {
-$(document).ready(function(){
-	alert("document");
-	$("#new_group").hide();
-	$("#reg_group").hide();
-	$("#turn_off_on_group").hide();
-	$("#turn_off_on_user").hide();
-   });
-});   
-
+		$(function () {
+			$(document).ready(function(){
+			//alert("document");
+			let tables = document.getElementsByTagName( "table" ); // находим элементы с тегом table
+			for( let i = 1; i < tables.length; i++){ // проходим циклом по всем элементам массивоподобного объекта
+				tables[i].style.visibility="collapse";	// скрываем таблицы пользователей
+			}
+			$("#new_group").hide();
+			//$("#reg_group").hide();
+			//$("#turn_off_on_group").hide();
+			//$("#turn_off_on_user").hide();
+			});
+		});   
+/*
 $(function () {	
 $('#reg_new_group').click(function(){
 	//var value = $('#select').val();
@@ -270,82 +341,9 @@ $(function () {
       }
     });
   });
-});			
+});	*/		
 		</script>
-<!--
-			<div class="container" id="reg_group">
-				<div class="row justify-content-around">
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title mb-2 text-muted">Регистрация новой группы</h5>
-	  
-							<p>
-								<form name="test" method="post">  
-									{% csrf_token %}
-									<p><b>Имя группы:</b><br>
-										<input type="text" size="40" id="name_new_group">
-									</p>
-									<p>Комментарий руководителя группы:<Br>
-										<textarea name="comment" cols="40" rows="3" id="comment_new_group"></textarea></p>
-									<p><input type="submit" value="Зарегистрировать группу" id="reg_new_group">
-									<input type="reset" value="Очистить" id="clear_new_group"></p>
-								</form>
-							</p>
-	  
-						</div>
-					</div>	  
-				</div>
-			</div>
 
-
-			<div class="container" id="turn_off_on_group">
-				<div class="row justify-content-around">
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title mb-2 text-muted">Отключение/подключение старой группы</h5>
-	  
-							<p>
-								<form name="test" method="post">  
-									{% csrf_token %}
-									<p><b>Имя группы:</b><br>
-										<input type="text" size="40">
-									</p>
-									<p>Комментарий руководителя группы:<Br>
-									<textarea name="comment" cols="40" rows="3"></textarea></p>
-									<p><input type="submit" value="Зарегистрировать группу">
-									<input type="reset" value="Очистить"></p>
-								</form>
-							</p>
-	  
-						</div>
-					</div>	  
-				</div>
-			</div>
-
-			<div class="container" id="turn_off_on_user">
-				<div class="row justify-content-around">
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title mb-2 text-muted">Отключение/подключение пользователя</h5>
-	  
-							<p>
-								<form name="test" method="post">  
-									{% csrf_token %}
-									<p><b>Имя группы:</b><br>
-										<input type="text" size="40">
-									</p>
-									<p>Комментарий руководителя группы:<Br>
-									<textarea name="comment" cols="40" rows="3"></textarea></p>
-									<p><input type="submit" value="Зарегистрировать группу">
-									<input type="reset" value="Очистить"></p>
-								</form>
-							</p>
-	  
-						</div>
-					</div>	  
-				</div>
-			</div>
--->
 			<div class="container" id="new_group">
 			  <div class="row justify-content-around">
 				  <div class="card">
@@ -364,90 +362,11 @@ $(function () {
 				  </div>	  
 			  </div>
 			</div>
-
-<!--
-		<div class="modal fade" id="modal-book">
-			<div class="modal-dialog">
-				<div class="modal-content">		
-				<p>
-					Модальная форма.
-				</p>
-				<p>
-					 <form name="test" method="post">  <!-- action="input1.php">  -->
-<!--
-						{% csrf_token %}
-						<p><b>Ваше имя:</b><br>
-						<input type="text" size="40">
-						</p>
-						<p><b>Каким браузером в основном пользуетесь:</b><Br>
-						<input type="radio" name="browser" value="ie"> Internet Explorer<Br>
-						<input type="radio" name="browser" value="opera"> Opera<Br>
-						<input type="radio" name="browser" value="firefox"> Firefox<Br>
-						</p>
-						<p>Комментарий<Br>
-						<textarea name="comment" cols="40" rows="3"></textarea></p>
-						<p><input type="submit" value="Отправить">
-						<input type="reset" value="Очистить"></p>
-					</form>
-				</p>				
-				</div>
-			</div>
-		</div>
--->
-<!--
-			{% if works_live == '0' %}
--->			
-
-			
-<!--			
-	  <p>
-		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
-	  </p>
--->	 
-<!--
-			<p>
-				Имя группы: {{name_of_grouphr}}. Комментарий руководителя: {{comment_of_TL}}.
-			</p>
---> 
-		{% endif %} 
-	  </p>	  
-	  
-<!--	  
-      <form method="post">
-      {% csrf_token %}
-
-	  {{NumberOfPoints}}
-      {{ form|crispy }}
-
-      <p>
-	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB</button>
-      </p>
-
-      </form>
-	  
-	  <p>
-		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
-	  </p>	  
--->	  
+	  </p>	   
 	</div>
     </div>	  
   </div>
 </div>
 
-<!--
-<div class="container">
-  <div class="row justify-content-around">
-    <div class="card">
-    <div class="card-body">
-      <h5 class="card-title mb-2 text-muted">Считанная из InfluxDB тестовая последовательность</h5>
-	  
-      <p>
-	    Точки тестовой последовательности InfluxDB. {{user}} {{ current_site }}
-	  </p>
-	  
-	</div>
-    </div>	  
-  </div>
-</div>
--->	  
+ 
 {% endblock content %}

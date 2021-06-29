@@ -120,7 +120,7 @@ class UsersPoints(forms.Form):
 
 class RegistrationGrouphr(forms.ModelForm):
 
-    name_of_grouphr = forms.CharField(max_length=100, label='Имя группы', help_text='Имя регистрируемой группы')
+    name_of_grouphr = forms.CharField(max_length=100, label='Имя группы', help_text='Имя регистрируемой группы', required=False)
     comment_of_TL = forms.CharField(max_length=1000, label='Комментарий руководителя', help_text='Комментарий руководителя группы', required=False, widget=forms.Textarea)
     operating_grouphr = forms.BooleanField(label='Активировать группу', help_text='Активирует регистрируемую группу', required=False)
 	
@@ -130,6 +130,7 @@ class RegistrationGrouphr(forms.ModelForm):
         super(RegistrationGrouphr, self).__init__(*args, **username_dict)
 
         self.fields['user'].initial = user_auth_name
+        self.fields['name_of_grouphr'].initial = tb_test
 	
     class Meta:
         model = Groupshr

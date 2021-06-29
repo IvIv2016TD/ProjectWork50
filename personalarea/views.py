@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
+from django.urls import reverse
 from accounts.models import Profile, Seanses, Groupshr
 from datetime import datetime, timedelta
 from pandas import *
@@ -50,13 +52,42 @@ def prsar_view(request):
 
     tl_groups = Groupshr.objects.filter(user=user)
     n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
-    tdicprsar.update({'n_grouphr':n_grouphr}) 
+    tdicprsar.update({'n_grouphr':n_grouphr})
+
+    GM_dict = {}
+    i = 0
+    tdicprsar.update({'TUI':len(n_grouphr)})
+    tdicprsar.update({'TUI_GN':n_grouphr[0][0]})
+    for igroups in n_grouphr:
+        user_inf = []
+        gm_groups = Groupshr.objects.filter(name_of_grouphr=igroups[0]).exclude(user=user)
+        n_user = gm_groups.values_list('user')
+        tdicprsar.update({'TUI_UN':len(n_user)})
+        j = 0
+        for jusers in n_user:
+            #id_user = User.objects.all().get(username = jusers[j][0]).id
+            id_user = 328
+            gm_users = Profile.objects.filter(id=id_user)
+            prf_users = gm_users.values_list('first_name', 'last_name', 'data_of_registration', 'time_of_last_visit', 'signup_confirmation')
+    #        user_inf = prf_users[0]
+            j = j + 1
+        #n1 = n_user[0]
+        #user_inf.append(n1)
+        user_inf.append(prf_users)
+        #user_inf.append(igroups[0])
+        #GM_dict[igroups[0]] = user_inf
+        #GM_dict[igroups[0]] = igroups[0]
+        #GM_dict.update({i:user_inf})
+        GM_dict = {'one':'one', 'two':'two'}
+        #GM_list = [[[100, 101], [110, 111]], [[200, 201], [210, 211]]]
+        i = i +1
+    tdicprsar.update({'user_inf':GM_dict})		
 
     tdicprsar.update({'name_of_grouphr':'form.not_POST'})
     if request.POST:# and request.is_ajax():
         #form = WorksForm(request.POST)
         tdicprsar.update({'name_of_grouphr':'form.POST'})
-        form = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+        form = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb='')
         if form.is_valid():
             name_of_grouphr = form.cleaned_data.get('name_of_grouphr')
             tdicprsar.update({'name_of_grouphr':'form.is_valid'})
@@ -101,7 +132,7 @@ def prsar_view(request):
             return JsonResponse({"errors": errors}, status=400)		
     else:
         #form = WorksForm()
-        form = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
+        form = RegistrationGrouphr(username=tdicprsar['username'], tb='')
         #works_live = "-1"
         #tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form':form})
@@ -526,6 +557,7 @@ def testing(request):
     return render(request, 'personalarea/testing.html', context=tdicprsar)
 	
 def grouphr_create(request):
+
     tdicprsar.update({'TestGC':'grouphr_create'})
     form = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
     context = {'form': form}
@@ -534,3 +566,11 @@ def grouphr_create(request):
         request=request,
     )
     return JsonResponse({'html_form': html_form})
+
+def turn_on(request):
+
+    return render(request, 'personalarea/templates/prsar.html', context=tdicprsar)
+	
+def turn_off(request):
+
+    return render(request, 'personalarea/prsar.html', context=tdicprsar)

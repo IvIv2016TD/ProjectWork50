@@ -50,6 +50,50 @@
         <button type="submit">Зарегистрироваться</button>
       </form>
 
+		<script>
+/*
+		$(function () {	
+		$('#js-button').click(function(){
+			var value_t = $('#operations option:selected').text();
+			var value_v = "0"; //$('#operations option:selected').val();
+			$('#js-result').html('Выбрана операция: ' + value_t + '  ' + value_v);
+			if (value_v == "0") {
+				$("#new_group").show(); // зарегистрировать новую группу
+			} else if (value_v == "1") {
+				$("#turn_off_on_group").show(); // отключить/подключить старую группу
+			} else if (value_v == "2") {
+				$("#turn_off_on_user").show(); // отключить/подключить пользователя
+			}
+			});
+		});
+*/
+		
+		$(function () {	
+		$('#id_status_of_user').click(function(){
+			var value_t = $('#id_status_of_user option:selected').text();
+			var value_v = $('#id_status_of_user option:selected').val();
+			$('#js-result').html('Выбрана операция: ' + value_t + '  ' + value_v);
+			if (value_v == "GM") {
+				$("label[for='id_name_of_group']").show();
+				$("#id_name_of_group").show();			
+			} else if (value_v == "SU") {
+				$("label[for='id_name_of_group']").hide();
+				$("#id_name_of_group").hide();				
+			} else if (value_v == "TL") {
+				$("label[for='id_name_of_group']").hide();
+				$("#id_name_of_group").hide();				
+			}
+			});
+		});		
+		
+		$(function () {
+			$(document).ready(function(){
+			$("label[for='id_name_of_group']").hide();
+			$("#id_name_of_group").hide();
+			});
+		}); 		
+		</script>
+
 	</div>
     </div>	  
   </div>
