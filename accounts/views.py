@@ -229,13 +229,16 @@ def signup_view(request):
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
             user.profile.status_of_user = form.cleaned_data.get('status_of_user')
-            list_return = form.cleaned_data.get('name_of_group').split()
+            if not user.profile.status_of_user:
+                list_return = form.cleaned_data.get('name_of_group').split()
+            else:
+                list_return = form.cleaned_data.get('name_of_group').split()
             #name_of_TL = list_return[0]
-            name_of_TL = list_return[0]
-            group_of_GM = list_return[1]
+                name_of_TL = list_return[0]
+                group_of_GM = list_return[1]
             #num_profiles = {'name_of_TL':'TestUser9'} # имя руководителя выбранной группы
-            num_profiles = {'TL':name_of_TL} # имя руководителя выбранной группы
-            num_profiles = {'group_GM':group_of_GM} # имя выбранной группы
+                num_profiles = {'TL':name_of_TL} # имя руководителя выбранной группы
+                num_profiles = {'group_GM':group_of_GM} # имя выбранной группы
             # пользователь не сможет залогинится пока регистрация не будет подтверждена
             user.is_active = False
             user.save()
