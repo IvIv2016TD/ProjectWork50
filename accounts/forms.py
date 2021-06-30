@@ -55,7 +55,7 @@ class SignUpForm(UserCreationForm):
 	
     #self.fields['name_of_group'].choices = names_list
     name_of_group = forms.ChoiceField(choices=names_list,
-	                                  label='Выбор группы')
+	                                  label='Выбор группы', required=False)
 									  #help_text='Выберите группу в которой хотите зарегистрироваться')
     
     class Meta:
