@@ -10,21 +10,13 @@
     <div class="card-body">
       <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
 	  
-      <form method="post">
-      {% csrf_token %}
-
-	  {{NumberOfPoints}}
-      {{ form|crispy }}
-
-      <p>
-	  <button type="submit" class="btn btn-light">Записать тестовую последовательность в InfluxDB</button>
-      </p>
-
-      </form>
-	  
 	  <p>
-		Записано точек: {{number_of_points_write}} . Прочтено точек: {{number_of_points_read}} .
+		Модуль: {{Test_WWP}} .
 	  </p>	  
+
+	  <p>
+		Среднее ЧСС: {{result_df_mean|safe}} . 
+	  </p>	 
 	  
 	</div>
     </div>	  

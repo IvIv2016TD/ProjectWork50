@@ -68,7 +68,7 @@ class UsersSeanses(forms.Form):
             choice_str = begin_seanse.strftime('%d/%m/%Y, %H:%M:') + "  " + end_seanse.strftime('%d/%m/%Y, %H:%M:') + "  " + str(points_write)+ "  " + str(points_read)			
             choices_of_seanses.append ((n_seanse, choice_str))
             i = i + 1
-
+        choices_of_seanses.sort(key=lambda x: x[0])	# сортировка списка сеансов по номеру = времени 
         self.fields['seanses_of_user'].choices = choices_of_seanses
 
     class Meta:
