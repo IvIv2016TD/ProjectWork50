@@ -229,10 +229,8 @@ def signup_view(request):
             user.profile.last_name = form.cleaned_data.get('last_name')
             user.profile.email = form.cleaned_data.get('email')
             user.profile.status_of_user = form.cleaned_data.get('status_of_user')
-            if not user.profile.status_of_user:
-                list_return = form.cleaned_data.get('name_of_group').split()
-            else:
-                list_return = form.cleaned_data.get('name_of_group').split()
+            list_return = form.cleaned_data.get('name_of_group').split()
+            if len(list_return) != 0:
             #name_of_TL = list_return[0]
                 name_of_TL = list_return[0]
                 group_of_GM = list_return[1]
