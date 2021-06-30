@@ -220,6 +220,7 @@ def activate(request, uidb64, token):
 
 def signup_view(request):
     global num_profiles, group_of_GM, name_of_TL
+    num_profiles = []
     if request.method  == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
