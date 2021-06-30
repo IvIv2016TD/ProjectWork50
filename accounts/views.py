@@ -267,7 +267,7 @@ def signup_view(request):
             #для руководителя группы				
             elif user.profile.status_of_user == 'TL':
                 msg = EmailMultiAlternatives(subject, message, settings.EMAIL_HOST_USER, 
-                    [User.objects.all().get(username='admin').email]) # почта администратора         
+                    [User.objects.all().get(username='admin_51').email]) # почта администратора         
                 msg.attach_alternative(message, "text/html")
                 msg.send()
                 num_profiles = {'upe':user.profile.email} 
