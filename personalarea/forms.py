@@ -14,6 +14,7 @@ FAVORITE_COLORS_CHOICES = [
 
 CONDITIONS = [
     ('rest', 'Покой'),
+    ('min_load', 'Минимальная нагрузка'),
     ('mixed_load', 'Смешанная нагрузка'),
     ('training', 'Тренировка'),
     ('extreme_load', 'Экстремальная нагрузка'),
@@ -21,6 +22,7 @@ CONDITIONS = [
 
 CONDITIONS_DICT = {
     'rest': 'Покой',
+    'min_load': 'Минимальная нагрузка',
     'mixed_load': 'Смешанная нагрузка',
     'training': 'Тренировка',
     'extreme_load': 'Экстремальная нагрузка',

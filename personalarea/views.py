@@ -33,10 +33,19 @@ WORKS_LIVE_DICT = {
 
 CONDITIONS_DICT = {
     'rest': 'Покой',
+    'min_load': 'Минимальная нагрузка',
     'mixed_load': 'Смешанная нагрузка',
     'training': 'Тренировка',
     'extreme_load': 'Экстремальная нагрузка',
 }
+
+NAME_COL_LIST = [
+    "Покой", 
+    "Минимальная нагрузка", 
+    "Смешанная нагрузка", 
+    "Тренировка", 
+    "Экстремальная нагрузка"
+]
 
 def prsar_view(request):
     
@@ -59,7 +68,10 @@ def prsar_view(request):
 
     tl_groups = Groupshr.objects.filter(user=user)
     n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
-    tdicprsar.update({'n_grouphr':n_grouphr})
+    tdicprsar.update({'n_grouphr':n_grouphr})    
+    
+    tdicprsar.update({'Flag_Seanses':0})
+    tdicprsar.update({'Flag_Series':0})        
 
     #GM_dict = {}
     #i = 0
@@ -186,13 +198,24 @@ def prsar_reggr_view(request):
 
     return render(request, 'prsar_reggr.html', context=tdicprsar)
 	
-def logged_out_view(request):
+#def logged_out_view(request):
+def logged_out_view():
 
-    seanse = Seanses.create_seanse(request.user.username, tdicprsar['time_of_begin'],
+    #seanse = Seanses.create_seanse(request.user.username, tdicprsar['time_of_begin'],
+    seanse = Seanses.create_seanse(tdicprsar['username'], tdicprsar['time_of_begin'],
                 tdicprsar['number_of_points_write'], tdicprsar['number_of_points_read'])	
     seanse.save()
+    #logout(request)	
+    #return render(request, 'logged_out.html', context=tdicprsar)
+    return
+    
+def logged_out_view_debag(request):
+
+    #seanse = Seanses.create_seanse(request.user.username, tdicprsar['time_of_begin'],
+    #            tdicprsar['number_of_points_write'], tdicprsar['number_of_points_read'])	
+    #seanse.save()
     logout(request)	
-    return render(request, 'logged_out.html', context=tdicprsar)
+    return render(request, 'logged_out.html', context=tdicprsar)    
 
 def write_influxDB():
     import influxdb_client
@@ -213,12 +236,27 @@ def write_influxDB():
 
     npoints = tdicprsar['number_of_points_write'] 
     tdicprsar.update({'hr_measurement':MEASUREMENT})
+    # Сдвиг по условиям
+    
+    sdv_dict = {
+        'rest': 0,
+        'min_load': 5,
+        'mixed_load': 10,
+        'training': 15,
+        'extreme_load': 20,
+    }
+        
+    #tdicprsar.update({'Test_WWP':sdv_dict[tdicprsar['conditions']]})
+  
+    sdv_cond = sdv_dict[tdicprsar['conditions']] + random.randint(-3, 3)
     min = -5
     max = 15
     for item in range(tdicprsar['number_of_points_write']):
-        hr = 70 + random.randint(min, max)
+        hr = 70 + random.randint(min, max) + sdv_cond
         p = influxdb_client.Point(tdicprsar['hr_measurement']).tag("username", tdicprsar['username']).tag("location", tdicprsar['location']).tag("conditions", tdicprsar['conditions']).field("hr_per_minute", hr)
-        write_api.write(bucket=BUCKET, org=ORG, record=p)	
+        write_api.write(bucket=BUCKET, org=ORG, record=p)
+    
+    return        
 
 def read_influxDB(points_list):
     import influxdb_client
@@ -449,7 +487,15 @@ def work_with_seanses(request):
 
 def work_with_series(request):
     #tdicprsar.update({'Test_WWP':'Работа с сериями'})
-    user_seanses = Seanses.objects.filter(id__in=tdicprsar['seanses_of_user']).values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')
+    try:
+        user_seanses = Seanses.objects.filter(id__in=tdicprsar['seanses_of_user']).values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')
+        tdicprsar.update({'Flag_Seanses':1})
+        tdicprsar.update({'Flag_Series':0})
+    except KeyError:
+        tdicprsar.update({'Test_WWP':'Неопределены сеансы'})
+        tdicprsar.update({'Flag_Seanses':0})
+        return render(request, 'personalarea/work_with_series.html', context=tdicprsar)
+    
     tdicprsar.update({'user_seanses':user_seanses})
     args = []
     points_list = []
@@ -536,7 +582,9 @@ def work_with_series(request):
             tdicprsar.update({'names_of_locations':names_of_locations})
             tdicprsar.update({'names_of_conditions':names_of_conditions})
 			
-            read_influxDB_DataFrame(points_list, *args, **params_dict)	
+            read_influxDB_DataFrame(points_list, *args, **params_dict)
+
+            tdicprsar.update({'Flag_Series':1})
     else:
         form = UsersPoints(locations=tdicprsar['list_location'], conditions=tdicprsar['list_conditions'], username=tdicprsar['list_username'])
         #tdicprsar.update({'test_POST':'conditionsW'})
@@ -545,29 +593,49 @@ def work_with_series(request):
     return render(request, 'personalarea/work_with_series.html', context=tdicprsar)
 
 def work_with_points(request):
-    result_DF = tdicprsar['result_DF']	# DataFrame результатов
+
+    try:
+        result_DF = tdicprsar['result_DF']	# DataFrame результатов
+    except KeyError:
+        tdicprsar.update({'Test_WWP':'Неопределены серии'})
+        return render(request, 'personalarea/work_with_points.html', context=tdicprsar)
+    #result_DF = tdicprsar['result_DF']	# DataFrame результатов
     tdicprsar.update({'Test_WWP':'Работа с точками'})
     #mean_HR = result_DF['_value'].mean()
     #Test_MHR = 999
     #tdicprsar.update({'Test_MHR':result_DF.at[0, '_value']})
     #tdicprsar.update({'Test_MHR':mean_HR})
     #tdicprsar.update({'Test_MHR':Test_MHR})
+    tdicprsar.update({'Test_MHR':tdicprsar['names_of_conditions']})
+    tdicprsar.update({'TestLSQ':tdicprsar['names_of_locations']})    
     names_of_conditions_list = []
     for item in tdicprsar['names_of_conditions']:
-        names_of_conditions_list.append(CONDITIONS_DICT[item]) 
+        names_of_conditions_list.append(CONDITIONS_DICT[item])
+    tdicprsar.update({'TestNCL':names_of_conditions_list})
     df_mean = pandas.DataFrame(index=tdicprsar['names_of_locations'], columns=names_of_conditions_list)
     i = 0
     for location in tdicprsar['names_of_locations']:
         j = 0
         for condition in names_of_conditions_list: #tdicprsar['names_of_conditions']:
-            # строки, у которых значение в conditions = condition
-            ttt = result_DF.loc[result_DF['conditions']==tdicprsar['names_of_conditions'][j]]['_value'].mean()
-            tdicprsar.update({'Test_MHR':ttt})
+            # строки, у которых значение в conditions = condition & значение в locations = location
+            #ttt = result_DF.loc[result_DF['conditions']==tdicprsar['names_of_conditions'][j]]['_value'].mean()
+            #boolcon = result_DF['conditions']==tdicprsar['names_of_conditions'][j]
+            #boolloc = result_DF['location']==tdicprsar['names_of_locations'][i]
+            #ttt = result_DF.loc[(result_DF['conditions']==tdicprsar['names_of_conditions'][j] & result_DF['location']==tdicprsar['names_of_locations'][i])['_value'].mean()
+            #ttt = result_DF.loc[(boolcon & boolloc)]['_value'].mean()
+            #tdicprsar.update({'Test_MHR':ttt})
+            #tdicprsar.update({'Test_MHR':tdicprsar['names_of_conditions']})
+            #tdicprsar.update({'TestLSQ':names_of_locations})
             #df_mean.loc[location, condition] = result_DF.loc[result_DF['conditions']==tdicprsar['names_of_conditions'][j]].mean()
+            #ttt = result_DF.loc[(result_DF['location']==tdicprsar['names_of_locations'][i])]['_value'].mean()
+            ttt = result_DF.loc[((result_DF['conditions']==tdicprsar['names_of_conditions'][j]) & (result_DF['location']==tdicprsar['names_of_locations'][i]))]['_value'].mean()
             df_mean.loc[location, condition] = ttt
             j = j + 1
-            i = i + 1
-    tdicprsar.update({'result_df_mean':df_mean.to_html()})			
+        i = i + 1
+    #name_col_list = ["Покой", "Минимальная нагрузка", "Смешанная нагрузка", "Тренировка", "Экстремальная нагрузка"]
+    df_mean_ri = df_mean.reindex(columns=NAME_COL_LIST)
+    tdicprsar.update({'result_df_mean':df_mean_ri.to_html()})  # Таблица html
+    tdicprsar.update({'result_points_JS':df_mean_ri.T.to_json})    # Транспонированный DataFrame -> json
     return render(request, 'personalarea/work_with_points.html', context=tdicprsar)
 
 def testing(request):
@@ -584,6 +652,7 @@ def testing(request):
             write_influxDB()
             points_list = []
             read_influxDB(points_list)
+            logged_out_view()
             #points_list = []
             #points_list.append('Точка 1')
             #tdicprsar.update({'points_list':points_list})

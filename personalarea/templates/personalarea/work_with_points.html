@@ -4,25 +4,63 @@
  
 {% block content %}
 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 <div class="container">
   <div class="row justify-content-around">
     <div class="card">
     <div class="card-body">
-      <h5 class="card-title mb-2 text-muted">Запуск теста InfluxDB</h5>
-	  
+      <h5 class="card-title mb-2 text-muted">Обработка точек в выбранных сериях.</h5>
+
+
+
+	{% if Flag_Series == 0 %} 
+		Выберите серии для обработки на странице Работа с сериями ЧСС.
+		<p>
+			<a href="{% url 'work_with_series'%}">Перейдите по этой ссылке.</a>
+		</p>
+	{% elif Flag_Series == 1 %}
+        Серии выбраны.
+<!--
 	  <p>
 		Модуль: {{Test_WWP}} .
 	  </p>	  
+	  <p>
+		Расположение: {{TestLSQ}} .
+		Условия: {{Test_MHR}} .
+	  </p>
+-->
+	  <p>
+		Среднее ЧСС: {{result_df_mean|safe}} . 
+	  </p>	 
+		
+	{% else %}
+		
+	{% endif %}	
+	
+<!--	  
+	  <p>
+		Модуль: {{Test_WWP}} .
+	  </p>	  
+	  <p>
+		Расположение: {{TestLSQ}} .
+		Условия: {{Test_MHR}} .
+		Условия столбцы: {{TestNCL}} .
+	  </p>
 
 	  <p>
 		Среднее ЧСС: {{result_df_mean|safe}} . 
 	  </p>	 
-	  
+-->	  
 	</div>
     </div>	  
   </div>
 </div>
 
+
+<!--
 <div class="container">
   <div class="row justify-content-around">
     <div class="card">
@@ -37,5 +75,109 @@
     </div>	  
   </div>
 </div>
+-->
+<!--
+	<div>
+		<canvas id="myChart" width="800" height="200"></canvas>
+	</div>
+-->
+
+<script>		
+/*
+  const labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+  ];
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'Тест диаграммы',
+      backgroundColor: 'rgb(55, 199, 132)',
+      borderColor: 'rgb(55, 99, 232)',
+      data: [47, 10, 15, 12, 20, 30, 45],
+    }]
+  };
+
+  const config = {
+    type: 'line',
+    data: data,
+    options: {}
+  };
+  
+</script>
+
+<script>
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+*/  
+</script>
+
+	<div>
+		<canvas id="marksChart" width="400" height="400"></canvas>
+	</div>
+
+<script>
+
+//var marksCanvas = document.getElementById("marksChart");
+
+var a = "{{ result_points_JS|escapejs }}";
+		
+colors_mas = ["rgba(200,0,0,0.2)", "rgba(0,0,200,0.2)", "rgba(0,200,0,0.2)"];
+		
+let conditions = [];
+let locations = [];
+let values = [];
+let data_set = [];
+		
+let d_set = {};
+		
+let i = 0;
+let j = 0;
+		
+for (let key_l in JSON.parse(a)) {
+	// расположения
+	locations[j] = '\"' + key_l + '\"';
+	i = 0;
+			
+	// объект массива с ключём datasets объекта marksData диаграммы
+	d_set = {
+		label: locations[j],
+		backgroundColor: colors_mas[j],
+		data: [],
+	}			
+			
+	for (let key_c in JSON.parse(a)[key_l]) {
+		// условия			
+		conditions[i] = '\"' + key_c + '\"';
+		// значения
+		d_set["data"][i] = JSON.parse(a)[key_l][key_c];
+		i++;
+	}
+
+	data_set.push(d_set);
+
+	j++;			
+
+}
+
+var marksCanvas = document.getElementById("marksChart");
+var marksData = {
+  labels: conditions,
+  datasets: data_set 
+};
+
+var radarChart = new Chart(marksCanvas, {
+  type: 'radar',
+  data: marksData
+});
+  
+</script>
 	  
 {% endblock content %}

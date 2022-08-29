@@ -49,7 +49,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = "confirmreghr@mail.ru"
-EMAIL_HOST_PASSWORD = "IIr*pciRyR33"
+EMAIL_HOST_PASSWORD = "q8zDpeYRxdJCi4wndLj3"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -166,3 +166,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'home'
 #LOGIN_REDIRECT_URL = 'test_IDB'
+
+print("BASE_DIR = ", BASE_DIR, "STATIC_ROOT = ", STATIC_ROOT, "STATIC_URL = ", STATIC_URL)

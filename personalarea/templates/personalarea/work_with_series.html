@@ -23,6 +23,72 @@
 
       </form>
 -->	  
+
+	{% if Flag_Seanses == 0 %} 
+		Выберите сеансы для обработки на странице Работа с сеансами.
+		<p>
+			<a href="{% url 'work_with_seanses'%}">Перейдите по этой ссылке.</a>
+		</p>
+	{% elif Flag_Seanses == 1 %}
+        Сеансы выбраны.
+		<form id="UsersPoints" method="post">
+		{% csrf_token %}
+<!--
+		{{UsersPoints}}
+--> 
+		{{ form|crispy }}
+
+		<p>
+			<button type="submit" class="btn btn-light">Выбрать точки из InfluxDB</button>
+		</p>
+
+		</form>
+		
+		{% if Flag_Series == 1 %} 
+
+			<div class="container">
+			  <div class="row justify-content-around">
+				<div class="card">
+				<div class="card-body">
+				  <h5 class="card-title mb-2 text-muted">Считанная из InfluxDB тестовая последовательность</h5>
+				  
+				  <p>
+					Точки тестовой последовательности InfluxDB. {{user}} {{ current_site }}
+				  </p>
+
+				  <p>
+					Выбранные серии в DataFrame {{result|safe}}
+				  </p>
+				  
+				</div>
+				</div>	  
+			  </div>
+			</div>
+		{% endif %}	
+		
+	{% else %}
+		
+	{% endif %}
+		
+	<script type="text/javascript"> 
+		var a = "{{ Flag_Seanses|escapejs }}";
+		//document.write("Эта страница написана на JavaScript!");
+		//document.write(a);
+		if (a==0) {
+			//document.write("Ленинской партии слава!");
+		} else {
+			var para = document.createElement('p');
+			//para.textContent = 'Слава КПСС!!!';
+			var sect = document.querySelector('h5');
+			//sect.appendChild(para);
+		}
+	</script>
+
+<!--	  
+	  <p>
+		Исключение: {{Test_WWP}} .
+	  </p>	  	  
+	  
 	  <p>
 		Пользователем {{user}} выбраны следующие сеансы {{seanses_of_user}}: 
 	  </p>	  
@@ -74,6 +140,7 @@
 	  <p>
 		Полная строка фильтра {{TestASQ}}
 	  </p>
+-->
 
 <!--
 	  <ul>
@@ -82,12 +149,12 @@
 		{% endfor %}
 	  </ul>
 -->	
-
-      <form method="post">
+<!--
+      <form id="UsersPoints" method="post">
       {% csrf_token %}
 
 	  {{UsersPoints}}
-  
+
       {{ form|crispy }}
 
       <p>
@@ -95,12 +162,13 @@
       </p>
 
       </form>
-  
+-->  
 	</div>
     </div>	  
   </div>
 </div>
 
+<!--
 <div class="container">
   <div class="row justify-content-around">
     <div class="card">
@@ -119,5 +187,6 @@
     </div>	  
   </div>
 </div>
+-->
 	  
 {% endblock content %}

@@ -6,6 +6,10 @@
 
 {% block javascript %}
   <script src="{% static 'static/js/grouphr.js' %}"></script>
+<!--
+  <script type="text/javascript" src={% static "path/to/jquery.min.js" %}></script>
+  <script type="text/javascript" src={% static "path/to/main.js" %}></script>
+-->
 {% endblock %}
  
 {% block content %}
@@ -35,7 +39,8 @@
 			<p>
 				Словарь групп {{user_inf}} 
 			</p>
--->		  
+-->
+		  
 			<p>
 				Пользователь {{user}} ({{user.profile.first_name}} {{user.profile.last_name}}) управляет следующими группами:
 			</p>				
@@ -133,6 +138,7 @@
 		{% else %}
 		
 		{% endif %}
+		
 <!--
 		<button onclick = "myFunc()">Нажми меня</button> 
 -->
