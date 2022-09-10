@@ -119,8 +119,13 @@
 */  
 </script>
 
-	<div>
-		<canvas id="marksChart" width="400" height="400"></canvas>
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="card">
+    <div class="card-body">
+
+	<div class="grapharea" style="position:relative" id="chartContainer">
+		<canvas id="marksChart"  width="800" height="800"></canvas>
 	</div>
 
 <script>
@@ -179,5 +184,10 @@ var radarChart = new Chart(marksCanvas, {
 });
   
 </script>
+
+	</div>
+    </div>	  
+  </div>
+</div>
 	  
 {% endblock content %}
