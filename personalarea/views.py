@@ -49,7 +49,7 @@ NAME_COL_LIST = [
 
 def prsar_view(request):
     
-    global tdicprsar
+    global tdicprsar    # Словарь для передачи параметров
     
     user = request.user.username
     tdicprsar = {'username':user}
@@ -73,110 +73,23 @@ def prsar_view(request):
     tdicprsar.update({'Flag_Seanses':0})
     tdicprsar.update({'Flag_Series':0})        
 
-    #GM_dict = {}
-    #i = 0
-    #tdicprsar.update({'TUI':len(n_grouphr)})
-    #tdicprsar.update({'TUI_GN':n_grouphr[0][0]})
-    #for igroups in n_grouphr:
-    #    user_inf = []
-    #    gm_groups = Groupshr.objects.filter(name_of_grouphr=igroups[0]).exclude(user=user)
-    #    n_user = gm_groups.values_list('user')
-    #    tdicprsar.update({'TUI_UN':len(n_user)})
-    #    j = 0
-    #    for jusers in n_user:
-    #        #id_user = User.objects.all().get(username = jusers[j][0]).id
-    #        id_user = 328
-    #        gm_users = Profile.objects.filter(id=id_user)
-    #        prf_users = gm_users.values_list('first_name', 'last_name', 'data_of_registration', 'time_of_last_visit', 'signup_confirmation')
-    #        user_inf = prf_users[0]
-    #        j = j + 1
-    #    #n1 = n_user[0]
-    #    #user_inf.append(n1)
-    #    user_inf.append(prf_users)
-    #    #user_inf.append(igroups[0])
-    #    #GM_dict[igroups[0]] = user_inf
-    #    #GM_dict[igroups[0]] = igroups[0]
-    #    #GM_dict.update({i:user_inf})
-    #    GM_dict = {'one':'one', 'two':'two'}
-    #    #GM_list = [[[100, 101], [110, 111]], [[200, 201], [210, 211]]]
-    #    i = i +1
-    #tdicprsar.update({'user_inf':GM_dict})		
-
     tdicprsar.update({'name_of_grouphr':'form.not_POST'})
     if request.POST:# and request.is_ajax():
-        #form = WorksForm(request.POST)
         tdicprsar.update({'name_of_grouphr':'form.POST'})
         form = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb='')
         if form.is_valid():
             name_of_grouphr = form.cleaned_data.get('name_of_grouphr')
             tdicprsar.update({'name_of_grouphr':'form.is_valid'})
             form.save()
-            #return JsonResponse({"name_of_grouphr": name_of_grouphr}, status=200)
-            #tdicprsar.update({'test_POST':'conditionsV'})
-            #works_live = form.cleaned_data.get('works_live')
-            #tdicprsar.update({'works_live_str':WORKS_LIVE_DICT[works_live]})
-            #tdicprsar.update({'works_live':works_live})
-            #if works_live == '0':
-            #    tdicprsar.update({'works_live_test':works_live})
-            #    tdicprsar.update({'TestGC':'prsar_view'})
-            #    form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-            #    tdicprsar.update({'form_0':form_0})
-            #    return render(request, 'personalarea/prsar_reggr.html', context=tdicprsar)
-                #tl_groups = Groupshr.objects.filter(user=user)
-                #n_grouphr = tl_groups.values_list('name_of_grouphr', 'time_of_registration', 'comment_of_TL', 'operating_grouphr')
-                #tdicprsar.update({'n_grouphr':n_grouphr})                
-                #return redirect('prsar_reggr.html')
-                #prsar_reggr_view(request)
-                #return render(request, 'prsar_reggr.html', context=tdicprsar)
-                #if request.POST:
-                #    form_0 = RegistrationGroupHR(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-                #    if form_0.is_valid():
-                #        #tdicprsar.update({'test_POST':'conditionsV'})
-                #        name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
-                #        comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
-                #        tdicprsar.update({'name_of_grouphr':name_of_grouphr})
-                #        tdicprsar.update({'comment_of_TL':comment_of_TL})
-                #        return render(request, 'prsar_reggr.html', context=tdicprsar)
-                #        #return HttpResponseRedirect('http://yandex.ru/')
-                #else:
-                #    form_0 = RegistrationGroupHR(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-                #    #tdicprsar.update({'test_POST':'conditionsW'})
-                #tdicprsar.update({'form_0':form_0})
-                #tdicprsar.update({'prsar_reggr_view':'prsar_reggr_view'})
-                ##return render(request, 'prsar_reggr.html', context=tdicprsar)
-                ##return HttpResponseRedirect('http://yandex.ru/')
         else:
             errors = form.errors.as_json()
             tdicprsar.update({'name_of_grouphr':'form.is_not_valid'})
             return JsonResponse({"errors": errors}, status=400)		
     else:
-        #form = WorksForm()
         form = RegistrationGrouphr(username=tdicprsar['username'], tb='')
-        #works_live = "-1"
-        #tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form':form})
     tdicprsar.update({'WORKS_LIVE':WORKS_LIVE})
     
-
-    #if works_live == '0':
-    #    if request.POST:
-    #        form_0 = RegistrationGroupHR(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-    #        if form_0.is_valid():
-    #            #tdicprsar.update({'test_POST':'conditionsV'})
-    #            name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
-    #            comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
-    #            tdicprsar.update({'name_of_grouphr':name_of_grouphr})
-    #            tdicprsar.update({'comment_of_TL':comment_of_TL})
-    #    else:
-    #        form_0 = RegistrationGroupHR(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-    #        #tdicprsar.update({'test_POST':'conditionsW'})
-    #    tdicprsar.update({'form_0':form_0})
-
-	
-    #elif works_live == 1:
-        
-    #elif works_live == 2:		
-
     return render(request, 'prsar.html', context=tdicprsar)
 
 def prsar_reggr_view(request):
@@ -184,51 +97,42 @@ def prsar_reggr_view(request):
     tdicprsar.update({'TestPRV':prv})
 
     if request.POST:
-        #form_0 = RegistrationGrouphr(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
         if tdicprsar['form_0'].is_valid():
-            #tdicprsar.update({'test_POST':'conditionsV'})
             name_of_grouphr = form_0.cleaned_data.get('name_of_grouphr')
             comment_of_TL = form_0.cleaned_data.get('comment_of_TL')
             tdicprsar.update({'name_of_grouphr':name_of_grouphr})
             tdicprsar.update({'comment_of_TL':comment_of_TL})
     else:
         form_0 = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
-       #tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form_0':form_0})
 
     return render(request, 'prsar_reggr.html', context=tdicprsar)
 	
-#def logged_out_view(request):
 def logged_out_view():
 
-    #seanse = Seanses.create_seanse(request.user.username, tdicprsar['time_of_begin'],
+    # Запись в БД информации о сеансе после записи тестовой последовательности в InfluxBD
+    
     seanse = Seanses.create_seanse(tdicprsar['username'], tdicprsar['time_of_begin'],
                 tdicprsar['number_of_points_write'], tdicprsar['number_of_points_read'])	
     seanse.save()
-    #logout(request)	
-    #return render(request, 'logged_out.html', context=tdicprsar)
+
     return
     
 def logged_out_view_debag(request):
 
-    #seanse = Seanses.create_seanse(request.user.username, tdicprsar['time_of_begin'],
-    #            tdicprsar['number_of_points_write'], tdicprsar['number_of_points_read'])	
-    #seanse.save()
+    # Выход из личного кабинета
+
     logout(request)	
     return render(request, 'logged_out.html', context=tdicprsar)    
 
 def write_influxDB():
+
+    # Вычисление точек тестовой последовательности и запись из в InfluxDB
+
     import influxdb_client
     from influxdb_client.client.write_api import SYNCHRONOUS
 
     import random
-
-#    bucket = "HRWEB"
-#    org = "PM72"
-#    token = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
-## Store the URL of your InfluxDB instance
-#
-#    url="https://eu-central-1-1.aws.cloud2.influxdata.com/"
 
     client = influxdb_client.InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
@@ -245,8 +149,6 @@ def write_influxDB():
         'training': 15,
         'extreme_load': 20,
     }
-        
-    #tdicprsar.update({'Test_WWP':sdv_dict[tdicprsar['conditions']]})
   
     sdv_cond = sdv_dict[tdicprsar['conditions']] + random.randint(-3, 3)
     min = -5
@@ -259,27 +161,17 @@ def write_influxDB():
     return        
 
 def read_influxDB(points_list):
+
+    # Чтение точек тестовой последовательности из InfluxDB
+
     import influxdb_client
     from influxdb_client.client.write_api import SYNCHRONOUS
-
-#    bucket = "HRWEB"
-#    org = "PM72"
-#    token = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
-## Store the URL of your InfluxDB instance
-#
-#    url="https://eu-central-1-1.aws.cloud2.influxdata.com/"
 
     client = influxdb_client.InfluxDBClient(url=URL, token=TOKEN, org=ORG)
     query_api = client.query_api()
     username = '"' + tdicprsar['username'] + '"'
     bucket = '"' + BUCKET + '"'
     measurement = '"' + MEASUREMENT + '"'
-    #query = 'from(bucket:"HRWEB")\
-    #|> range(start: -10m)\
-    #|> filter(fn:(r) => r._measurement == "hr_measurement")\
-    #|> filter(fn:(r) => r.username == "TestUser2")\
-    #|> filter(fn:(r) => r.location == "Новосибирск")\
-    #|> filter(fn:(r) => r._field == "hr_per_minute" )'
 
     query = 'from(bucket:' + bucket + ')\
     |> range(start: -10m)\
@@ -307,18 +199,14 @@ def read_influxDB(points_list):
     tdicprsar.update({'number_of_points_read':len(results)})
     tdicprsar.update({'points_list':points_list})	
 	
-    return #points_list
+    return
 
 def read_influxDB_params(points_list, *args, **params_dict):
+
+    # Чтение параметров БД InfluxDB
+
     import influxdb_client
     from influxdb_client.client.write_api import SYNCHRONOUS
-
-#    bucket = "HRWEB"
-#    org = "PM72"
-#    token = "3sLsq9ECi2eSQEYQQjIdxZsTuV6NtFcaohVKzNeILEo5hOPGCRt0Mmgzug_8iai9fCNfbUD1s3wAYd5LAXHOjg=="
-## Store the URL of your InfluxDB instance
-#
-#    url="https://eu-central-1-1.aws.cloud2.influxdata.com/"
 
     client = influxdb_client.InfluxDBClient(url=URL, token=TOKEN, org=ORG)
     query_api = client.query_api()
@@ -330,35 +218,11 @@ def read_influxDB_params(points_list, *args, **params_dict):
     end_datatime = str(int((params_dict['time_of_end']).timestamp()) + 1)
     tdicprsar.update({'TestS':start_datatime})
     tdicprsar.update({'TestE':end_datatime})
-    #query = 'from(bucket:"HRWEB")\
-    #|> range(start: -10m)\
-    #|> filter(fn:(r) => r._measurement == "hr_measurement")\
-    #|> filter(fn:(r) => r.username == "TestUser2")\
-    #|> filter(fn:(r) => r.location == "Новосибирск")\
-    #|> filter(fn:(r) => r._field == "hr_per_minute" )'
-
-    #query = 'from(bucket:' + bucket + ')\
-    #|> range(start: ' + start_datatime + ', stop: ' + end_datatime + ')\
-    query0 = 'from(bucket:"HRWEB")\
-    |> range(start: -10m)\
-    |> filter(fn:(r) => r._measurement == ' + measurement + ')\
-    |> filter(fn:(r) => r.username == ' + username + ')\
-    |> filter(fn:(r) => r.location == "Новосибирск")\
-    |> filter(fn:(r) => r._field == "hr_per_minute" )'
 
     query = 'from(bucket:' + bucket + ')\
     |> range(start: ' + start_datatime + ', stop: ' + end_datatime + ')\
-    |> filter(fn:(r) => r._measurement == ' + measurement + ')'#\
-    #|> filter(fn:(r) => r.username == ' + username + ')\
-    #|> filter(fn:(r) => r.location == "Новосибирск")\
-    #|> filter(fn:(r) => r._field == "hr_per_minute" )'
+    |> filter(fn:(r) => r._measurement == ' + measurement + ')'
 
-    query2 = 'from(bucket:' + bucket + ')\
-    |> range(start: 1623498412, stop: 1623498487)\
-    |> filter(fn:(r) => r._measurement == ' + measurement + ')\
-    |> filter(fn:(r) => r.username == ' + username + ')\
-    |> filter(fn:(r) => r.location == "Новосибирск")\
-    |> filter(fn:(r) => r._field == "hr_per_minute" )'	
     tdicprsar.update({'TestA':query})
 
     result = client.query_api().query(org=ORG, query=query)
@@ -370,7 +234,6 @@ def read_influxDB_params(points_list, *args, **params_dict):
             results.append((record.values.get('location'), record.values.get('username'), record.values.get('conditions'), record.get_time(), record.get_field(), record.get_value()))
 
     tdicprsar.update({'TestRT':len(results)})
-    #tdicprsar.update({'TestTK':schema.tagKeys(bucket: "HRWEB")})
 
     delta = timedelta(hours=7, minutes=0)
     for item in results:
@@ -388,6 +251,9 @@ def read_influxDB_params(points_list, *args, **params_dict):
     return
 
 def read_influxDB_DataFrame(points_list, *args, **params_dict):
+
+    # Чтение точек InfluxDB в DataFrame Pandas
+
     import influxdb_client
     from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -400,8 +266,6 @@ def read_influxDB_DataFrame(points_list, *args, **params_dict):
     end_datatime = str(params_dict['time_of_end_DF'])
 # формируем строку запроса с фильтрами по имени пользователя
     names_of_user = params_dict['names_of_user']
-    #names_of_user.append("TestUser9")
-    #names_of_user.append("TestUser1")
     names_of_user_str = "("
     for item in names_of_user:
         names_of_user_str = names_of_user_str + "r.username ==" + '"' + item + '"' + " or "
@@ -437,28 +301,10 @@ def read_influxDB_DataFrame(points_list, *args, **params_dict):
     tdicprsar.update({'TestA':query})
 
     result = client.query_api().query_data_frame(org=ORG, query=query)
-    #result = []
     tdicprsar.update({'TestRR':len(result)})
 
-    #results = []
-    #for table in result:
-    #    for record in table.records:
-    #        results.append((record.values.get('location'), record.values.get('username'), record.values.get('conditions'), #record.get_time(), record.get_field(), record.get_value()))
-
-    #tdicprsar.update({'TestRT':len(results)})
-    ##tdicprsar.update({'TestTK':schema.tagKeys(bucket: "HRWEB")})
-
     delta = timedelta(hours=7, minutes=0)
-    #for item in results:
 
-    #    points_list.append("Место " + str(item[0]) + "Имя пользователя " + str(item[1]) + "Условия " + str(item[2]) +
-#		  " Дата, время" + (item[3] + delta).strftime('%d/%m/%Y, %H:%M:%S') +
-#          " Имя поля " + str(item[4]) +
-#          " Значение " + str(item[5])
-#          )
-
-#    tdicprsar.update({'number_of_points_read':len(results)})
-#    tdicprsar.update({'points_list':points_list})
     tdicprsar.update({'result_DF':result})
     tdicprsar.update({'result':result.to_html()})	
 	
@@ -466,18 +312,13 @@ def read_influxDB_DataFrame(points_list, *args, **params_dict):
 	
 def work_with_seanses(request):
 
+    # Выбор сеансов работы пользователя
+
     if request.POST:
         form = UsersSeanses(request.POST, username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
         if form.is_valid():
-            #birth_year = form.cleaned_data.get('birth_year')
-            #seanses_of_user = form.cleaned_data.get('seanses_of_user')
-            #conditions = form.cleaned_data.get('conditions')
-            #location = form.cleaned_data.get('location')
             tdicprsar.update({'test_POST':'conditionsV'})
-            #tdicprsar.update({'seanses_of_user':seanses_of_user})
-            #tdicprsar.update({'location':conditions})
             seanses_of_user = form.cleaned_data.get('seanses_of_user')
-            #location = form.cleaned_data.get('location')
             tdicprsar.update({'seanses_of_user':seanses_of_user})
     else:
         form = UsersSeanses(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
@@ -486,7 +327,9 @@ def work_with_seanses(request):
     return render(request, 'personalarea/work_with_seanses.html', context=tdicprsar)
 
 def work_with_series(request):
-    #tdicprsar.update({'Test_WWP':'Работа с сериями'})
+
+    # Выбор серий из выбранных сеансов работы пользователя
+
     try:
         user_seanses = Seanses.objects.filter(id__in=tdicprsar['seanses_of_user']).values_list('id', 'time_of_begin', 'time_of_end', 'number_of_points_write', 'number_of_points_read')
         tdicprsar.update({'Flag_Seanses':1})
@@ -550,29 +393,18 @@ def work_with_series(request):
     tdicprsar.update({'TestRT':len(results_points_list)})
     tdicprsar.update({'TestUN':len(list_username)})
 
-    ttt = []
-    ttt.append("ttt1")
-    ttt.append("ttt2")
-    tdicprsar.update({'ttt':ttt})
-    tdicprsar.update({'TestUN':len(ttt)})
-    #tdicprsar.update({'list_username':ttt})
+    #ttt = []
+    #ttt.append("ttt1")
+    #ttt.append("ttt2")
+    #tdicprsar.update({'ttt':ttt})
+    #tdicprsar.update({'TestUN':len(ttt)})
 
-    #args_tuple = 0
-    #query_params_dict = {}
-    #query_params_dict.update({'names':tdicprsar['list_username']})
-    #query_params_dict.update({'locations':tdicprsar['list_location']})
-    #query_params_dict.update({'conditions':tdicprsar['list_conditions']})	
-    #names=tdicprsar['list_username']
-    #locations=tdicprsar['list_location']
-    #conditions=tdicprsar['list_conditions']
     if request.POST:
         form = UsersPoints(request.POST, locations=tdicprsar['list_location'], conditions=tdicprsar['list_conditions'], username=tdicprsar['list_username'])
         if form.is_valid():
-            #tdicprsar.update({'test_POST':'conditionsV'})
             names_of_user = form.cleaned_data.get('names_of_user')
             names_of_locations = form.cleaned_data.get('names_of_locations')
             names_of_conditions= form.cleaned_data.get('names_of_conditions')
-            #tdicprsar.update({'seanses_of_user':seanses_of_user})
 # читаем из InfluxDB DataFrame со всеми выбранными сериями
             params_dict.update({'names_of_user':names_of_user})
             params_dict.update({'names_of_locations':names_of_locations})
@@ -587,25 +419,20 @@ def work_with_series(request):
             tdicprsar.update({'Flag_Series':1})
     else:
         form = UsersPoints(locations=tdicprsar['list_location'], conditions=tdicprsar['list_conditions'], username=tdicprsar['list_username'])
-        #tdicprsar.update({'test_POST':'conditionsW'})
     tdicprsar.update({'form':form})
 	
     return render(request, 'personalarea/work_with_series.html', context=tdicprsar)
 
 def work_with_points(request):
 
+    # Отображение средних значений выбранных серий на диаграмме
+
     try:
         result_DF = tdicprsar['result_DF']	# DataFrame результатов
     except KeyError:
         tdicprsar.update({'Test_WWP':'Неопределены серии'})
         return render(request, 'personalarea/work_with_points.html', context=tdicprsar)
-    #result_DF = tdicprsar['result_DF']	# DataFrame результатов
     tdicprsar.update({'Test_WWP':'Работа с точками'})
-    #mean_HR = result_DF['_value'].mean()
-    #Test_MHR = 999
-    #tdicprsar.update({'Test_MHR':result_DF.at[0, '_value']})
-    #tdicprsar.update({'Test_MHR':mean_HR})
-    #tdicprsar.update({'Test_MHR':Test_MHR})
     tdicprsar.update({'Test_MHR':tdicprsar['names_of_conditions']})
     tdicprsar.update({'TestLSQ':tdicprsar['names_of_locations']})    
     names_of_conditions_list = []
@@ -613,26 +440,17 @@ def work_with_points(request):
         names_of_conditions_list.append(CONDITIONS_DICT[item])
     tdicprsar.update({'TestNCL':names_of_conditions_list})
     df_mean = pandas.DataFrame(index=tdicprsar['names_of_locations'], columns=names_of_conditions_list)
+    
     i = 0
     for location in tdicprsar['names_of_locations']:
         j = 0
-        for condition in names_of_conditions_list: #tdicprsar['names_of_conditions']:
+        for condition in names_of_conditions_list: 
             # строки, у которых значение в conditions = condition & значение в locations = location
-            #ttt = result_DF.loc[result_DF['conditions']==tdicprsar['names_of_conditions'][j]]['_value'].mean()
-            #boolcon = result_DF['conditions']==tdicprsar['names_of_conditions'][j]
-            #boolloc = result_DF['location']==tdicprsar['names_of_locations'][i]
-            #ttt = result_DF.loc[(result_DF['conditions']==tdicprsar['names_of_conditions'][j] & result_DF['location']==tdicprsar['names_of_locations'][i])['_value'].mean()
-            #ttt = result_DF.loc[(boolcon & boolloc)]['_value'].mean()
-            #tdicprsar.update({'Test_MHR':ttt})
-            #tdicprsar.update({'Test_MHR':tdicprsar['names_of_conditions']})
-            #tdicprsar.update({'TestLSQ':names_of_locations})
-            #df_mean.loc[location, condition] = result_DF.loc[result_DF['conditions']==tdicprsar['names_of_conditions'][j]].mean()
-            #ttt = result_DF.loc[(result_DF['location']==tdicprsar['names_of_locations'][i])]['_value'].mean()
             ttt = result_DF.loc[((result_DF['conditions']==tdicprsar['names_of_conditions'][j]) & (result_DF['location']==tdicprsar['names_of_locations'][i]))]['_value'].mean()
             df_mean.loc[location, condition] = ttt
             j = j + 1
         i = i + 1
-    #name_col_list = ["Покой", "Минимальная нагрузка", "Смешанная нагрузка", "Тренировка", "Экстремальная нагрузка"]
+
     df_mean_ri = df_mean.reindex(columns=NAME_COL_LIST)
     tdicprsar.update({'result_df_mean':df_mean_ri.to_html()})  # Таблица html
     tdicprsar.update({'result_points_JS':df_mean_ri.T.to_json})    # Транспонированный DataFrame -> json
@@ -640,11 +458,11 @@ def work_with_points(request):
 
 def testing(request):
 
+    # Запись тестовой последовательности в БД InfluxDB
+
     if request.method == "POST":
         form = NumberOfPoints(request.POST)
         if form.is_valid():
-#            number_of_points_write = form.cleaned_data.get('number_of_points')
-#            tdicprsar.update({'number_of_points_write':number_of_points_write})
             tdicprsar.update({'measurement':'hr_measurement'})
             tdicprsar.update({'location':form.cleaned_data.get('location')})
             tdicprsar.update({'conditions':form.cleaned_data.get('conditions')})
@@ -653,15 +471,14 @@ def testing(request):
             points_list = []
             read_influxDB(points_list)
             logged_out_view()
-            #points_list = []
-            #points_list.append('Точка 1')
-            #tdicprsar.update({'points_list':points_list})
     else:
             form = NumberOfPoints()
     tdicprsar.update({'form':form})
     return render(request, 'personalarea/testing.html', context=tdicprsar)
 	
 def grouphr_create(request):
+
+    # Добавление группы пользователей руководителем
 
     tdicprsar.update({'TestGC':'grouphr_create'})
     form = RegistrationGrouphr(username=tdicprsar['username'], tb=tdicprsar['time_of_begin'])
